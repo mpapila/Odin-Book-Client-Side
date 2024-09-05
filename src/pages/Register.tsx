@@ -1,7 +1,183 @@
-import React from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+} from "@mui/material";
+import ContactMailIcon from "@mui/icons-material/Forum";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { RegisterFormData } from "../type";
 
 function Register() {
-  return <div></div>;
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const URL = `${apiUrl}/register`;
+
+  const mutation = useMutation({
+    mutationFn: async (body: RegisterFormData) => {
+      return axios.post(URL, body, {
+        headers: { "Content-Type": "application/json" },
+      });
+    },
+    onSuccess: (response) => {
+      const { message } = response.data;
+      console.log(message);
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e)) {
+        const errorMessage = e.response?.data?.errorMessage;
+        console.error("Registration failed:", errorMessage);
+      }
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const body: RegisterFormData = {
+      firstName: data.get("firstName") as string,
+      lastName: data.get("lastName") as string,
+      username: data.get("username") as string,
+      password: data.get("password") as string,
+      dateOfBirth: data.get("dateOfBirth") as string,
+    };
+    console.log("body", body);
+    mutation.mutate(body);
+  };
+  return (
+    <>
+      <Container
+        maxWidth="sm"
+        className="full-background"
+        sx={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          marginLeft: 0,
+        }}
+      >
+        <Box display="flex" flexDirection="row" alignItems="center">
+          <ContactMailIcon
+            color="success"
+            sx={{ width: "60px", height: "60px" }}
+          />
+          <Typography ml={3} fontSize="30px">
+            Odin Book
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            marginBottom: 8,
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign Up
+          </Typography>
+          {/* {error && (
+            <>
+              <Typography component="h1" color="red" variant="body1">
+                {error}
+              </Typography>
+            </>
+          )} */}
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <TextField
+              className="custom-textfield"
+              margin="normal"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              autoComplete="firstName"
+            />
+            <TextField
+              className="custom-textfield"
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="lastName"
+            />
+            <TextField
+              className="custom-textfield"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+            />
+            <TextField
+              className="custom-textfield"
+              margin="normal"
+              required
+              fullWidth
+              id="dateOfBirth "
+              label="Date of Birth"
+              name="dateOfBirth"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              className="custom-textfield"
+              margin="normal"
+              required
+              fullWidth
+              type="password"
+              id="password"
+              label="Password"
+              name="password"
+              autoComplete="password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign Up
+            </Button>
+            {/* <Button
+              // component={RouterLink}
+              to="/login"
+              variant="text"
+              sx={{ textDecoration: "underline", textTransform: "none" }}
+            >
+              Already have an account? Sign in
+            </Button> */}
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            width: "auto",
+            textAlign: "center",
+            py: 2,
+          }}
+        >
+          <Typography variant="body2">Mehmet Papila &copy; 2024</Typography>
+        </Box>
+      </Container>
+    </>
+  );
 }
 
 export default Register;
