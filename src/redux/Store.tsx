@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
+import UserErrorReducer from "./UserErrorSlice";
 
 export const store = configureStore({
-  reducer: {},
+  reducer: { UserError: UserErrorReducer },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

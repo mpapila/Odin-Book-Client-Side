@@ -5,3 +5,11 @@ export interface RegisterFormData {
   password: string;
   dateOfBirth: string;
 }
+
+export interface ErrorDetail {
+  type: string;
+  value: string;
+  msg: string;
+  path: string;
+  location: string;
+}
