@@ -6,6 +6,11 @@ export interface RegisterFormData {
   dateOfBirth: string;
 }
 
+export interface LoginFormData {
+  username: string;
+  password: string;
+}
+
 export interface ErrorDetail {
   type: string;
   value: string;

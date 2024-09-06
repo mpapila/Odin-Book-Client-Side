@@ -15,11 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setErrorMessage } from "../redux/UserErrorSlice";
 import { RootState } from "../redux/Store";
 import Loading from "../components/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const error = useSelector(
     (state: RootState) => state.UserError.setErrorMessage
   );
+  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   const dispatch = useDispatch();
 
@@ -35,6 +37,7 @@ function Register() {
       const { message } = response.data;
       console.log(message);
       dispatch(setErrorMessage(null));
+      navigate("/login");
     },
     onError: (e) => {
       if (axios.isAxiosError(e)) {
