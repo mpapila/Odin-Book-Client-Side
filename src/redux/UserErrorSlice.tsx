@@ -1,8 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-interface UserErrorState {
-  setErrorMessage?: string | null;
-}
+import { UserErrorState } from "../type";
 
 const initialState: UserErrorState = {
   setErrorMessage: null,

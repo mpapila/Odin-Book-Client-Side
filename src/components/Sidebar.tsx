@@ -1,4 +1,4 @@
-import { CardContent, Container, Typography } from "@mui/material";
+import { CardContent, Typography } from "@mui/material";
 import Person2Icon from "@mui/icons-material/Person2";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -6,8 +6,25 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FeedIcon from "@mui/icons-material/Feed";
 import BookIcon from "/book.png";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/Store";
+import { setActiveButton } from "../redux/SideBarSlice";
+import { TypographyButton } from "../styles/SharedStyles";
 
 function Sidebar() {
+  const dispatch = useDispatch();
+  const notificationBar = useSelector(
+    (state: RootState) => state.Sidebar.setNotificationBar
+  );
+  const activeButton = useSelector(
+    (state: RootState) => state.Sidebar.setActiveButton
+  );
+  const handleButtonClick = (buttonId: string) => {
+    dispatch(setActiveButton(buttonId));
+  };
+
+  console.log("activeButton", activeButton);
+
   return (
     <>
       <CardContent
@@ -23,31 +40,35 @@ function Sidebar() {
           display="flex"
           color="#0D66FF"
           borderBottom="1px white solid"
-          paddingLeft="2%"
-          paddingBottom="10%"
-          paddingTop="5%"
+          padding="5% 0 10% 2%"
+          variant="h5"
+          margin="2px 0 0 4%"
         >
           <img height="50px" src={BookIcon}></img>
-          <Typography variant="h5" marginTop="2px" marginLeft="4%">
-            odinbook
-          </Typography>
+          odinbook
         </Typography>
-        <Typography display="flex" color="#0D66FF" padding="5% 0 5% 2%">
+        <TypographyButton onClick={() => handleButtonClick("home")}>
           <FeedIcon sx={{ marginRight: "5px" }} /> Home
-        </Typography>
-        <Typography display="flex" color="#0D66FF" padding="0 0 5% 2%">
+        </TypographyButton>
+        <TypographyButton onClick={() => handleButtonClick("profile")}>
           <Person2Icon sx={{ marginRight: "5px" }} /> Profile
-        </Typography>
-        <Typography display="flex" color="#0D66FF" padding="0 0 5% 2%">
+        </TypographyButton>
+        <TypographyButton onClick={() => handleButtonClick("friend")}>
           <Diversity3Icon sx={{ marginRight: "5px" }} /> Friends
-        </Typography>
-        <Typography display="flex" color="#0D66FF" padding="0 0 5% 2%">
-          <NotificationsNoneIcon sx={{ marginRight: "5px" }} /> Notification{" "}
-          <NotificationsActiveIcon sx={{ marginRight: "5px" }} />
-        </Typography>
-        <Typography display="flex" color="#0D66FF" padding="0 0 5% 2%">
+        </TypographyButton>
+        {!notificationBar ? (
+          <TypographyButton onClick={() => handleButtonClick("notification")}>
+            <NotificationsNoneIcon sx={{ marginRight: "5px" }} /> Notification
+          </TypographyButton>
+        ) : (
+          <TypographyButton onClick={() => handleButtonClick("notification")}>
+            <NotificationsActiveIcon sx={{ marginRight: "5px" }} />
+            Notification
+          </TypographyButton>
+        )}
+        <TypographyButton>
           <LogoutIcon sx={{ marginRight: "5px" }} /> Logout
-        </Typography>
+        </TypographyButton>
       </CardContent>
     </>
   );

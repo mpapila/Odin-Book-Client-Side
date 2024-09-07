@@ -18,3 +18,12 @@ export interface ErrorDetail {
   path: string;
   location: string;
 }
+
+export interface SidebarState {
+  setNotificationBar: boolean;
+  setActiveButton: string | null;
+}
+
+export interface UserErrorState {
+  setErrorMessage?: string | null;
+}
