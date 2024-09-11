@@ -1,10 +1,11 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import EachPost from "./EachPost";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
+import CreatePost from "./CreatePost";
 import { setCreatePost } from "../redux/PostFeedSlice";
-import CloseIcon from "@mui/icons-material/Close";
+import CelebrationIcon from "@mui/icons-material/Celebration";
 
 function PostFeed() {
   const createPost = useSelector(
@@ -14,64 +15,7 @@ function PostFeed() {
   const dispatch = useDispatch();
   return (
     <>
-      {createPost && (
-        <>
-          <Box
-            sx={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              zIndex: 9,
-            }}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "25%",
-              borderRadius: 1,
-              boxShadow: 24,
-              p: 4,
-              zIndex: 10,
-              backgroundColor: "white",
-            }}
-          >
-            <Box
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              justifyContent="space-between"
-              pb={4}
-              borderBottom="5px solid black"
-            >
-              <div></div>
-              <Typography fontSize="20px" fontWeight="800">
-                Create Post
-              </Typography>
-              <div
-                onClick={() => {
-                  dispatch(setCreatePost(false));
-                }}
-              >
-                <CloseIcon
-                  sx={{
-                    position: "absolute",
-                    top: 8, // Adjust as needed
-                    right: 8, // Adjust as needed
-                    cursor: "pointer",
-                  }}
-                />
-              </div>
-            </Box>
-            <Typography>Hello</Typography>
-          </Box>
-        </>
-      )}
+      {createPost && <CreatePost />}
       <Box
         display="flex"
         minWidth="75vw"
@@ -105,7 +49,112 @@ function PostFeed() {
           </Box>
           <EachPost />
         </Box>
-        <Box sx={{ maxWidth: "40vw" }}>ALL FRIENDS</Box>
+        <Box
+          // borderLeft="1px solid black"
+          sx={{ maxWidth: "40vw" }}
+        >
+          <Box>
+            <Typography pr={15} color="#939090" fontWeight={700}>
+              Birthdays
+            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              flexDirection="row"
+              mt={3}
+              mb={3}
+            >
+              <CelebrationIcon />
+              <Typography ml={2}>Bora Papila's birthday is today.</Typography>
+            </Box>
+            <Box borderTop="1px solid #c3c0c0" mb={3}>
+              <Typography fontWeight={700} color="#939090" mt={3} mb={3}>
+                Friends
+              </Typography>
+              <Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="row"
+                  pt={1}
+                  pb={1}
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer",
+                      backgroundColor: "#ededed",
+                    },
+                  }}
+                >
+                  <FaceIcon sx={{ fontSize: "40px" }} />
+                  <Typography fontWeight="bold" ml={2}>
+                    Bengi Turer
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+            <Box borderTop="1px solid #c3c0c0" mb={3}>
+              <Typography fontWeight={700} color="#939090" mt={3}>
+                Contacts
+              </Typography>
+              <Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="row"
+                  pt={1}
+                  pb={1}
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer",
+                      backgroundColor: "#ededed",
+                    },
+                  }}
+                >
+                  <FaceIcon sx={{ fontSize: "40px" }} />
+                  <Typography fontWeight="bold" ml={2}>
+                    Bora Papila
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="row"
+                  pt={1}
+                  pb={1}
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer",
+                      backgroundColor: "#ededed",
+                    },
+                  }}
+                >
+                  <FaceIcon sx={{ fontSize: "40px" }} />
+                  <Typography fontWeight="bold" ml={2}>
+                    Cigdem Papila
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  flexDirection="row"
+                  pt={1}
+                  pb={1}
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer",
+                      backgroundColor: "#ededed",
+                    },
+                  }}
+                >
+                  <FaceIcon sx={{ fontSize: "40px" }} />
+                  <Typography fontWeight="bold" ml={2}>
+                    Turgut Papila
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </>
   );
