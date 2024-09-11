@@ -1,11 +1,10 @@
-import { CardContent, Typography } from "@mui/material";
+import { CardContent } from "@mui/material";
 import Person2Icon from "@mui/icons-material/Person2";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FeedIcon from "@mui/icons-material/Feed";
-import BookIcon from "/book.png";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 import { setActiveButton } from "../redux/SideBarSlice";
@@ -32,21 +31,11 @@ function Sidebar() {
           height: "%100",
           width: "25%",
           backgroundColor: "#F6F6F6",
-          padding: "0",
+          padding: "50px 0 0 0",
           margin: "0",
+          minHeight: "80vh",
         }}
       >
-        <Typography
-          display="flex"
-          color="#0D66FF"
-          borderBottom="1px white solid"
-          padding="5% 0 10% 2%"
-          variant="h5"
-          margin="2px 0 0 4%"
-        >
-          <img height="50px" src={BookIcon}></img>
-          odinbook
-        </Typography>
         <TypographyButton onClick={() => handleButtonClick("home")}>
           <FeedIcon sx={{ marginRight: "5px" }} /> Home
         </TypographyButton>

@@ -24,6 +24,10 @@ export interface SidebarState {
   setActiveButton: string | null;
 }
 
+export interface PostFeedState {
+  setCreatePost: boolean;
+}
+
 export interface UserErrorState {
   setErrorMessage?: string | null;
 }

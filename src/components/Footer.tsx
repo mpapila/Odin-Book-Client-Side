@@ -1,9 +1,11 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 function Footer() {
   return (
     <>
-      <Typography>Hello Footer</Typography>
+      <Box sx={{ minHeight: "9vh" }}>
+        <Typography>Hello Footer</Typography>
+      </Box>
     </>
   );
 }

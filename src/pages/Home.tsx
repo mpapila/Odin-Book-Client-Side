@@ -1,4 +1,3 @@
-import React from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import PostFeed from "../components/PostFeed";
@@ -15,24 +14,18 @@ function Home() {
   );
   return (
     <>
-      <div style={{ display: "flex" }}>
-        <Sidebar />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <Header />
+      <div>
+        <Header />
+        <div style={{ display: "flex" }}>
+          <Sidebar />
+          <div style={{ padding: "20px" }}>
             {activeButton === "home" && <PostFeed />}
             {activeButton === "profile" && <Profile />}
             {activeButton === "friend" && <Friends />}
             {activeButton === "notification" && <Notification />}
           </div>
-          <Footer />
         </div>
+        <Footer />
       </div>
     </>
   );
