@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import EachPost from "./EachPost";
 import { useDispatch, useSelector } from "react-redux";
@@ -67,8 +67,8 @@ function PostFeed() {
               <CelebrationIcon />
               <Typography ml={2}>Bora Papila's birthday is today.</Typography>
             </Box>
-            <Box borderTop="1px solid #c3c0c0" mb={3}>
-              <Typography fontWeight={700} color="#939090" mt={3} mb={3}>
+            <Box borderTop="1px solid #c3c0c0" mb={1}>
+              <Typography fontWeight={700} color="#939090" mt={3}>
                 Friends
               </Typography>
               <Box>
@@ -92,7 +92,7 @@ function PostFeed() {
                 </Box>
               </Box>
             </Box>
-            <Box borderTop="1px solid #c3c0c0" mb={3}>
+            <Box borderTop="1px solid #c3c0c0" mb={1}>
               <Typography fontWeight={700} color="#939090" mt={3}>
                 Contacts
               </Typography>

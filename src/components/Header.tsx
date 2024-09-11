@@ -1,7 +1,25 @@
-import { Box, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import BookIcon from "/book.png";
+import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
 
 function Header() {
+  const [inputValue, setInputValue] = useState("");
+  const values = [
+    "Mehmet Papila",
+    "Bora Papila",
+    "Bengi Turer",
+    "Turgut Papila",
+    "Cigdem Papila",
+    "David Stephenson",
+  ];
+
   return (
     <>
       <Box
@@ -26,7 +44,43 @@ function Header() {
             odinbook
           </Typography>
         </Box>
-        <Typography padding="20px 0 0 20px">Hello Header</Typography>
+        <Box>
+          <Autocomplete
+            forcePopupIcon={false}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) =>
+              setInputValue(newInputValue)
+            }
+            id="search"
+            options={values}
+            getOptionLabel={(option) => option}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                size="small"
+                variant="standard"
+                InputProps={{
+                  ...params.InputProps,
+                  disableUnderline: true,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{
+                  margin: "5px 5px 5px 0px",
+                  width: "30vw",
+                  backgroundColor: "white",
+                  borderRadius: "10px",
+                  padding: "5px 0px 0px 10px",
+                }}
+                placeholder={`Search odinbook`}
+              />
+            )}
+            open={inputValue.length > 1}
+          />
+        </Box>
       </Box>
     </>
   );
