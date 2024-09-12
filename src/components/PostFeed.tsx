@@ -22,7 +22,22 @@ function PostFeed() {
         maxWidth="75vw"
         justifyContent="space-around"
       >
-        <Box display="flex" flexDirection="column" sx={{ maxWidth: "40vw" }}>
+        <Box
+          overflow="scroll"
+          height="80vh"
+          display="flex"
+          flexDirection="column"
+          sx={{
+            maxWidth: "40vw",
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
+            "&-ms-overflow-style:": {
+              display: "none",
+            },
+          }}
+        >
           <Box p="15px" marginBottom="30px" sx={{ backgroundColor: "#f6f6f6" }}>
             <FaceIcon
               fontSize="large"
@@ -47,6 +62,9 @@ function PostFeed() {
               }}
             />
           </Box>
+          <EachPost />
+          <EachPost />
+          <EachPost />
           <EachPost />
         </Box>
         <Box

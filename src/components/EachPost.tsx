@@ -9,7 +9,7 @@ export const EachPost = () => {
       padding="12px 16px"
       boxShadow="2"
       sx={{ backgroundColor: "#f6f6f6", className: "eachPost" }}
-      marginBottom="10px"
+      marginBottom="30px"
     >
       <div
         style={{
@@ -111,18 +111,38 @@ export const EachPost = () => {
       </Box>
       <div
         style={{
-          display: "flex",
           marginBottom: "10px",
           marginTop: "10px",
         }}
       >
-        <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
-        <Box mt="5px">
-          <Typography fontWeight="fontWeightBold" sx={{ lineHeight: "0.7" }}>
-            Bengi Turer
-          </Typography>
-          <Typography variant="caption">2 minutes ago</Typography>
-          <Typography>Interested if I can see sample photos.</Typography>
+        <Typography
+          color="#939090"
+          fontSize="15px"
+          fontWeight={700}
+          sx={{
+            "&:hover": {
+              cursor: "pointer",
+            },
+          }}
+        >
+          View More Comment
+        </Typography>
+        <Box display="flex">
+          <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
+          <Box
+            display="flex"
+            flexDirection="column"
+            // mt="2px"
+            p={2}
+            borderRadius="20px"
+            sx={{ backgroundColor: "white" }}
+          >
+            <Typography fontWeight="fontWeightBold" sx={{ lineHeight: "0.7" }}>
+              Bengi Turer
+            </Typography>
+            <Typography variant="caption">2 minutes ago</Typography>
+            <Typography>Interested if I can see sample photos.</Typography>
+          </Box>
         </Box>
       </div>
     </Box>
