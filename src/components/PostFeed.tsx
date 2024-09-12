@@ -18,13 +18,13 @@ function PostFeed() {
       {createPost && <CreatePost />}
       <Box
         display="flex"
-        minWidth="75vw"
-        maxWidth="75vw"
+        minWidth="70vw"
+        maxWidth="70vw"
         justifyContent="space-around"
       >
         <Box
           overflow="scroll"
-          height="80vh"
+          height="85vh"
           display="flex"
           flexDirection="column"
           sx={{

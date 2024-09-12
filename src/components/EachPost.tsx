@@ -2,8 +2,10 @@ import { Box, Typography } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
+import { useNavigate } from "react-router-dom";
 
 export const EachPost = () => {
+  const navigate = useNavigate();
   return (
     <Box
       padding="12px 16px"
@@ -91,7 +93,7 @@ export const EachPost = () => {
           flexDirection="row"
           alignItems="center"
           onClick={() => {
-            console.log("Commented");
+            navigate("/postpage");
           }}
           mt={1}
           mb={1}

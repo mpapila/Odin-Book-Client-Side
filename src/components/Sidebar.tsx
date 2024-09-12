@@ -30,6 +30,7 @@ function Sidebar() {
         sx={{
           height: "%100",
           width: "25%",
+          minWidth: "25%",
           backgroundColor: "#F6F6F6",
           padding: "50px 0 0 0",
           margin: "0",
@@ -42,8 +43,8 @@ function Sidebar() {
         <TypographyButton onClick={() => handleButtonClick("profile")}>
           <Person2Icon sx={{ marginRight: "5px" }} /> Profile
         </TypographyButton>
-        <TypographyButton onClick={() => handleButtonClick("friend")}>
-          <Diversity3Icon sx={{ marginRight: "5px" }} /> Friends
+        <TypographyButton onClick={() => handleButtonClick("postpage")}>
+          <Diversity3Icon sx={{ marginRight: "5px" }} /> Post Page
         </TypographyButton>
         {!notificationBar ? (
           <TypographyButton onClick={() => handleButtonClick("notification")}>
