@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 import { setActiveButton } from "../redux/SideBarSlice";
 import { TypographyButton } from "../styles/SharedStyles";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ function Sidebar() {
   const handleButtonClick = (buttonId: string) => {
     dispatch(setActiveButton(buttonId));
   };
+
+  const navigate = useNavigate();
 
   console.log("activeButton", activeButton);
 
@@ -37,7 +40,32 @@ function Sidebar() {
           minHeight: "80vh",
         }}
       >
-        <TypographyButton onClick={() => handleButtonClick("home")}>
+        <TypographyButton onClick={() => navigate("/")}>
+          <FeedIcon sx={{ marginRight: "5px" }} /> Home
+        </TypographyButton>
+        <TypographyButton onClick={() => navigate("/profile")}>
+          {/* Replace "1" with the user's actual ID when dynamic */}
+          <Person2Icon sx={{ marginRight: "5px" }} /> Profile
+        </TypographyButton>
+        <TypographyButton onClick={() => navigate("/postpage")}>
+          <Diversity3Icon sx={{ marginRight: "5px" }} /> Post Page
+        </TypographyButton>
+        {!notificationBar ? (
+          <TypographyButton onClick={() => navigate("/notification")}>
+            <NotificationsNoneIcon sx={{ marginRight: "5px" }} /> Notification
+          </TypographyButton>
+        ) : (
+          <TypographyButton onClick={() => navigate("/notification")}>
+            <NotificationsActiveIcon sx={{ marginRight: "5px" }} />
+            Notification
+          </TypographyButton>
+        )}
+        <TypographyButton
+        // onClick={() => navigate("/logout")}
+        >
+          <LogoutIcon sx={{ marginRight: "5px" }} /> Logout
+        </TypographyButton>
+        {/* <TypographyButton onClick={() => handleButtonClick("home")}>
           <FeedIcon sx={{ marginRight: "5px" }} /> Home
         </TypographyButton>
         <TypographyButton onClick={() => handleButtonClick("profile")}>
@@ -58,7 +86,7 @@ function Sidebar() {
         )}
         <TypographyButton>
           <LogoutIcon sx={{ marginRight: "5px" }} /> Logout
-        </TypographyButton>
+        </TypographyButton> */}
       </CardContent>
     </>
   );

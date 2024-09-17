@@ -2,12 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import UserErrorReducer from "./UserErrorSlice";
 import SideBarReducer from "./SideBarSlice";
 import PostFeedSlice from "./PostFeedSlice";
-
+import NotificationReducer from "./NotificationSlice";
 export const store = configureStore({
   reducer: {
     UserError: UserErrorReducer,
     Sidebar: SideBarReducer,
     PostFeed: PostFeedSlice,
+    Notification: NotificationReducer,
   },
 });
 

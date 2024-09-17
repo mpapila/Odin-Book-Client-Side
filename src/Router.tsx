@@ -2,8 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import ProfilePage from "./pages/ProfilePage";
 import PostPage from "./pages/PostPage";
+import Profile from "./pages/Profile";
+import Notification from "./components/Notification";
 
 function Router() {
   return (
@@ -11,8 +12,9 @@ function Router() {
       <Route path="/" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/profile/:id" element={<ProfilePage />} />
+      <Route path="/profile/" element={<Profile />} />
       <Route path="/postpage" element={<PostPage />} />
+      <Route path="/notification" element={<Notification />} />
     </Routes>
   );
 }

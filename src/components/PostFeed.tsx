@@ -6,6 +6,7 @@ import { RootState } from "../redux/Store";
 import CreatePost from "./CreatePost";
 import { setCreatePost } from "../redux/PostFeedSlice";
 import CelebrationIcon from "@mui/icons-material/Celebration";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 function PostFeed() {
   const createPost = useSelector(
@@ -17,9 +18,10 @@ function PostFeed() {
     <>
       {createPost && <CreatePost />}
       <Box
+        p="20px"
         display="flex"
-        minWidth="70vw"
-        maxWidth="70vw"
+        // minWidth="70vw"
+        width="70vw"
         justifyContent="space-around"
       >
         <Box
@@ -121,53 +123,20 @@ function PostFeed() {
                   flexDirection="row"
                   pt={1}
                   pb={1}
-                  sx={{
-                    "&:hover": {
-                      cursor: "pointer",
-                      backgroundColor: "#ededed",
-                    },
-                  }}
                 >
                   <FaceIcon sx={{ fontSize: "40px" }} />
                   <Typography fontWeight="bold" ml={2}>
                     Bora Papila
                   </Typography>
-                </Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  flexDirection="row"
-                  pt={1}
-                  pb={1}
-                  sx={{
-                    "&:hover": {
-                      cursor: "pointer",
-                      backgroundColor: "#ededed",
-                    },
-                  }}
-                >
-                  <FaceIcon sx={{ fontSize: "40px" }} />
-                  <Typography fontWeight="bold" ml={2}>
-                    Cigdem Papila
-                  </Typography>
-                </Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  flexDirection="row"
-                  pt={1}
-                  pb={1}
-                  sx={{
-                    "&:hover": {
-                      cursor: "pointer",
-                      backgroundColor: "#ededed",
-                    },
-                  }}
-                >
-                  <FaceIcon sx={{ fontSize: "40px" }} />
-                  <Typography fontWeight="bold" ml={2}>
-                    Turgut Papila
-                  </Typography>
+                  <PersonAddIcon
+                    htmlColor="#0690FD"
+                    sx={{
+                      ml: "10px",
+                      "&:hover": {
+                        cursor: "pointer",
+                      },
+                    }}
+                  />
                 </Box>
               </Box>
             </Box>

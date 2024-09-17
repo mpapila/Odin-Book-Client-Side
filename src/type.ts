@@ -27,7 +27,9 @@ export interface SidebarState {
 export interface PostFeedState {
   setCreatePost: boolean;
 }
-
+export interface NotificationState {
+  setNotificationRead: boolean;
+}
 export interface UserErrorState {
   setErrorMessage?: string | null;
 }

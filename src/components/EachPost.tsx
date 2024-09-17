@@ -21,7 +21,17 @@ export const EachPost = () => {
       >
         <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
         <Box mt="5px">
-          <Typography fontWeight="fontWeightBold" sx={{ lineHeight: "0.7" }}>
+          <Typography
+            fontWeight="fontWeightBold"
+            sx={{
+              "&:hover": {
+                cursor: "pointer",
+                color: "#0043B7",
+                backgroundColor: "#ededed",
+              },
+              lineHeight: "0.7",
+            }}
+          >
             Mehmet Papila
           </Typography>
           <Typography variant="caption">2 minutes ago</Typography>
@@ -139,7 +149,17 @@ export const EachPost = () => {
             borderRadius="20px"
             sx={{ backgroundColor: "white" }}
           >
-            <Typography fontWeight="fontWeightBold" sx={{ lineHeight: "0.7" }}>
+            <Typography
+              fontWeight="fontWeightBold"
+              sx={{
+                "&:hover": {
+                  cursor: "pointer",
+                  color: "#0043B7",
+                  // backgroundColor: "#ededed",
+                },
+                lineHeight: "0.7",
+              }}
+            >
               Bengi Turer
             </Typography>
             <Typography variant="caption">2 minutes ago</Typography>
