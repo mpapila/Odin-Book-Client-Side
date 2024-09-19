@@ -10,9 +10,12 @@ import { RootState } from "../redux/Store";
 import { setActiveButton } from "../redux/SideBarSlice";
 import { TypographyButton } from "../styles/SharedStyles";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Sidebar() {
   const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
+  const myUserId = localStorage.getItem("myUserId");
   const notificationBar = useSelector(
     (state: RootState) => state.Sidebar.setNotificationBar
   );
@@ -26,6 +29,13 @@ function Sidebar() {
   const navigate = useNavigate();
 
   console.log("activeButton", activeButton);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+  });
 
   return (
     <>
@@ -61,32 +71,14 @@ function Sidebar() {
           </TypographyButton>
         )}
         <TypographyButton
-        // onClick={() => navigate("/logout")}
+          onClick={() => {
+            localStorage.removeItem("myUserId");
+            localStorage.removeItem("token");
+            navigate("/login");
+          }}
         >
           <LogoutIcon sx={{ marginRight: "5px" }} /> Logout
         </TypographyButton>
-        {/* <TypographyButton onClick={() => handleButtonClick("home")}>
-          <FeedIcon sx={{ marginRight: "5px" }} /> Home
-        </TypographyButton>
-        <TypographyButton onClick={() => handleButtonClick("profile")}>
-          <Person2Icon sx={{ marginRight: "5px" }} /> Profile
-        </TypographyButton>
-        <TypographyButton onClick={() => handleButtonClick("postpage")}>
-          <Diversity3Icon sx={{ marginRight: "5px" }} /> Post Page
-        </TypographyButton>
-        {!notificationBar ? (
-          <TypographyButton onClick={() => handleButtonClick("notification")}>
-            <NotificationsNoneIcon sx={{ marginRight: "5px" }} /> Notification
-          </TypographyButton>
-        ) : (
-          <TypographyButton onClick={() => handleButtonClick("notification")}>
-            <NotificationsActiveIcon sx={{ marginRight: "5px" }} />
-            Notification
-          </TypographyButton>
-        )}
-        <TypographyButton>
-          <LogoutIcon sx={{ marginRight: "5px" }} /> Logout
-        </TypographyButton> */}
       </CardContent>
     </>
   );

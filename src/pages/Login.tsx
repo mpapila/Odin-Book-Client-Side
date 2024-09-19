@@ -36,7 +36,9 @@ function Login() {
     },
     onSuccess: (response) => {
       dispatch(setErrorMessage(null));
-      const { token } = response.data;
+      const { token, myUserId } = response.data;
+      console.log("myUserId", myUserId);
+      localStorage.setItem("myUserId", myUserId);
       localStorage.setItem("token", token);
       navigate("/");
       console.log("message", token);
@@ -64,7 +66,7 @@ function Login() {
       username: data.get("username") as string,
       password: data.get("password") as string,
     };
-    console.log("body", body);
+    // console.log("body", body);
     mutation.mutate(body);
   };
 

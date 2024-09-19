@@ -24,6 +24,19 @@ export interface SidebarState {
   setActiveButton: string | null;
 }
 
+export interface UsersInfo {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  dateOfBirth: string;
+  createdAt: string;
+}
+
+export interface UsersState {
+  setUsersInfo: UsersInfo[];
+}
+
 export interface PostFeedState {
   setCreatePost: boolean;
 }
