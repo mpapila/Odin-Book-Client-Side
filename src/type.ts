@@ -31,10 +31,32 @@ export interface UsersInfo {
   username: string;
   dateOfBirth: string;
   createdAt: string;
+  status: string;
+  error: null;
+}
+
+export interface IncomingRequests {
+  requestId: string;
+  requesterId: string;
+  firstname: string;
+  lastname: string;
+  username: string;
+}
+
+export interface mergedIncomingRequests {
+  requestId: string;
+  requesterId: string;
+  firstname: string;
+  lastname: string;
+  username: string;
 }
 
 export interface UsersState {
   setUsersInfo: UsersInfo[];
+  incomingFriendRequestList: IncomingRequests[];
+  mergedIncomingRequestsList: mergedIncomingRequests[];
+  status: string;
+  error: null;
 }
 
 export interface PostFeedState {

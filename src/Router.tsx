@@ -4,7 +4,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import PostPage from "./pages/PostPage";
 import Profile from "./pages/Profile";
-import Notification from "./components/Notification";
+import Notification from "./pages/Notification";
 
 function Router() {
   return (

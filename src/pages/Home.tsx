@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 import Profile from "./Profile";
-import Notification from "../components/Notification";
+import Notification from "./Notification";
 import PostPage from "./PostPage";
 
 function Home() {

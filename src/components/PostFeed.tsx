@@ -2,30 +2,34 @@ import { Box, TextField, Typography } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import EachPost from "./EachPost";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/Store";
+import { AppDispatch, RootState } from "../redux/Store";
 import CreatePost from "./CreatePost";
 import { setCreatePost } from "../redux/PostFeedSlice";
 import CelebrationIcon from "@mui/icons-material/Celebration";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { setUsersInfo } from "../redux/UserSlice";
 import { useEffect } from "react";
+import { fetchUsersInfo } from "../redux/UserSlice";
 
 function PostFeed() {
   const token = localStorage.getItem("token");
+  if (!token) return null;
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const createPost = useSelector(
     (state: RootState) => state.PostFeed.setCreatePost
   );
+  const incomingFriendRequestList = useSelector(
+    (state: RootState) => state.UserInfo.incomingFriendRequestList
+  );
   const allUsersInfo = useSelector(
     (state: RootState) => state.UserInfo.setUsersInfo
   );
   const myUserId = localStorage.getItem("myUserId");
-  console.log("usersinfo", allUsersInfo);
+  console.log("allUsersInfo", allUsersInfo);
   console.log("create post", createPost);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const mutationAddFriend = useMutation({
     mutationFn: async (friendId) => {
       return axios.post(
@@ -44,27 +48,17 @@ function PostFeed() {
     },
   });
 
-  const mutationUsersInfo = useMutation({
-    mutationFn: async () => {
-      return axios.get(`${URL}/allUsers`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    },
-    onSuccess: (response) => {
-      dispatch(setUsersInfo(response.data.allUsers));
-    },
-    onError: (error) => {
-      console.error("error fetching users info:", error);
-    },
-  });
   useEffect(() => {
-    mutationUsersInfo.mutate();
+    dispatch(fetchUsersInfo());
   }, []);
-  const friendSuggestions = allUsersInfo.filter(
-    (user) => user._id !== myUserId
+
+  const incomingFriendRequestIds = incomingFriendRequestList.map(
+    (request) => request.requesterId
   );
+
+  const friendSuggestions = allUsersInfo
+    .filter((user) => user._id !== myUserId)
+    .filter((user) => !incomingFriendRequestIds.includes(user._id));
   console.log("friendSuggestions", friendSuggestions);
 
   const addFriend = (userId: any) => {
