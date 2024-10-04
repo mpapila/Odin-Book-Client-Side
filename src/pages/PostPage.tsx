@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -6,327 +6,341 @@ import SendIcon from "@mui/icons-material/Send";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
+import { useParams } from "react-router-dom";
+import { Key, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getPostbyId } from "../redux/PostDetailSlice";
+import { AppDispatch, RootState } from "../redux/Store";
+import { formatDate } from "../utils";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Comment,
+  NewCommentBody,
+  PostReactionData,
+  PostReactionState,
+} from "../type";
+import axios from "axios";
+import { fetchUsersInfo } from "../redux/UserSlice";
 
 function PostPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const postId = useParams().id;
+  const eachPostDetail = useSelector(
+    (state: RootState) => state.PostDetail.eachPostDetail
+  );
+  console.log("eachpostdetail", eachPostDetail);
+  const allUsers = useSelector((state: RootState) => state.UserInfo.allUsers);
+  console.log("allusers", allUsers);
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(
+    eachPostDetail?.post?.likes?.length || 0
+  );
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const URL = `${apiUrl}`;
+  const token = localStorage.getItem("token");
+
+  const mutationLikeGet = useMutation<PostReactionState, unknown, string>({
+    mutationFn: async (postId) => {
+      return axios.get(`${URL}/postAttribute`, {
+        params: { postId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: (response) => {
+      console.log("Data fetched successfully:", response.data);
+      const data: PostReactionData = response.data;
+      setIsLiked(data.alreadyLiked ?? false);
+      setLikesCount(data.postLikeCount ?? 0);
+    },
+    onError: (error) => {
+      console.error("Error fetching data:", error);
+    },
+  });
+
+  const mutationCreateCommentPost = useMutation({
+    mutationFn: async (body: NewCommentBody) => {
+      return axios.post(`${URL}/newComment`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: (response) => {
+      console.log("response", response);
+      if (postId) {
+        dispatch(getPostbyId(postId));
+      }
+    },
+  });
+
+  const mutationLikedPosts = useMutation({
+    mutationFn: async (postId: string) => {
+      return axios.post(
+        `${URL}/likePost`,
+        { postId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    },
+    onSuccess: (response) => {
+      console.log(response);
+      setIsLiked((prevIsLiked) => !prevIsLiked);
+      setLikesCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
+    },
+  });
+
+  console.log("postid", postId);
+  console.log("eachPostDetail", eachPostDetail);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const content = formData.get("content") as string;
+
+    const data = new FormData(e.currentTarget);
+    console.log("data", data);
+    if (postId == undefined) return undefined;
+    const body: NewCommentBody = {
+      content,
+      postId,
+    };
+    console.log("body", body);
+    if (postId) {
+      mutationCreateCommentPost.mutate(body);
+    }
+  };
+
+  useEffect(() => {
+    if (postId) {
+      dispatch(getPostbyId(postId));
+      dispatch(fetchUsersInfo());
+      mutationLikeGet.mutate(postId);
+    }
+  }, []);
+
   return (
     <>
-      <div>
-        <Header />
-        <div style={{ display: "flex" }}>
-          <Sidebar />
+      {eachPostDetail && eachPostDetail.post && eachPostDetail.nameInfo && (
+        <div>
+          <Header />
+          <div style={{ display: "flex" }}>
+            <Sidebar />
 
-          <Box
-            width="30vw"
-            height="75vh"
-            overflow="scroll"
-            margin="0 150px"
-            padding="12px 16px 0px 10px"
-            boxShadow="2"
-            sx={{
-              backgroundColor: "#f6f6f6",
-              scrollbarWidth: "none",
-              "&::-webkit-scrollbar": {
-                display: "none",
-              },
-              "&-ms-overflow-style:": {
-                display: "none",
-              },
-            }}
-            marginBottom="30px"
-            marginTop="20px"
-          >
-            <div
-              style={{
-                display: "flex",
-                marginBottom: "10px",
-              }}
-            >
-              <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
-              <Box mt="5px">
-                <Typography
-                  fontWeight="fontWeightBold"
-                  sx={{ lineHeight: "0.7" }}
-                >
-                  Mehmet Papila
-                </Typography>
-                <Typography variant="caption">2 minutes ago</Typography>
-              </Box>
-            </div>
-            <Box borderBottom="1px solid #c3c0c0">
-              <Typography>
-                It's official guys. Sony has lost their damn minds 😂 Meet the
-                #PS5Pro, the First Ever $700/€800 Digital Console. It aims to
-                achieve fidelity mode level of graphics, with the framerate
-                target of performance mode, via 3 solutions: ⚬ Larger GPU ⚬
-                Advanced ray tracing ⚬ PlayStation Spectral Super Resolution
-                This expensive digital pro console will be available starting
-                November 7th for $700. And yeah the Vertical Stand is sold
-                separately 😂
-              </Typography>
-              <Box
-                mt={1}
-                mb={1}
-                display="flex"
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Box display="flex" flexDirection="row">
-                  <ThumbUpIcon htmlColor="#0690FD" fontSize="small" />
-                  <Typography ml={1} color="#c3c0c0">
-                    2
-                  </Typography>
-                </Box>
-                <Box display="flex" flexDirection="row">
-                  <CommentIcon fontSize="small" htmlColor="#0690FD" />
-                  <Typography ml={1} color="#c3c0c0">
-                    2
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
             <Box
-              color="#c3c0c0"
-              borderBottom="1px solid #c3c0c0"
-              display="flex"
-              flexDirection="row"
-              justifyContent="space-around"
+              width="30vw"
+              height="auto"
+              margin="0 150px"
+              padding="12px 16px 0px 10px"
+              boxShadow="2"
+              sx={{
+                backgroundColor: "#f6f6f6",
+              }}
+              marginBottom="30px"
+              marginTop="20px"
             >
+              <div
+                style={{
+                  display: "flex",
+                  marginBottom: "10px",
+                }}
+              >
+                <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
+                <Box mt="5px">
+                  <Typography
+                    fontWeight="fontWeightBold"
+                    sx={{ lineHeight: "0.7" }}
+                  >
+                    {eachPostDetail.nameInfo.firstName}{" "}
+                    {eachPostDetail.nameInfo.lastName}
+                  </Typography>
+                  <Typography variant="caption">
+                    {formatDate(eachPostDetail.post.createdAt)}
+                  </Typography>
+                </Box>
+              </div>
+              <Box borderBottom="1px solid #c3c0c0">
+                <Typography>{eachPostDetail.post.content}</Typography>
+                <Box
+                  mt={1}
+                  mb={1}
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Box display="flex" flexDirection="row">
+                    <ThumbUpIcon htmlColor="#0690FD" fontSize="small" />
+                    <Typography ml={1} color="#c3c0c0">
+                      {likesCount}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" flexDirection="row">
+                    <CommentIcon fontSize="small" htmlColor="#0690FD" />
+                    <Typography ml={1} color="#c3c0c0">
+                      2
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
               <Box
+                color="#c3c0c0"
+                borderBottom="1px solid #c3c0c0"
                 display="flex"
                 flexDirection="row"
-                alignItems="center"
-                mt={1}
-                mb={1}
-                onClick={() => {
-                  console.log("Liked");
-                }}
+                justifyContent="space-around"
+              >
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  mt={1}
+                  mb={1}
+                  onClick={() => {
+                    if (postId) {
+                      mutationLikedPosts.mutate(postId);
+                    }
+                    console.log("Liked");
+                  }}
+                  sx={{
+                    "&:hover": {
+                      cursor: "pointer",
+                      color: "#0043B7",
+                      backgroundColor: "#ededed",
+                    },
+                  }}
+                >
+                  <ThumbUpIcon
+                    htmlColor={isLiked ? "#0043B7" : "#0690FD"}
+                    fontSize="small"
+                  />
+                  <Typography ml={1} fontWeight="fontWeightBold">
+                    Like
+                  </Typography>
+                </Box>
+              </Box>
+              <Box
+                height="60vh"
+                overflow="scroll"
                 sx={{
-                  "&:hover": {
-                    cursor: "pointer",
-                    color: "#0043B7",
-                    backgroundColor: "#ededed",
+                  scrollbarWidth: "none",
+                  "&::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                  "&-ms-overflow-style:": {
+                    display: "none",
                   },
                 }}
               >
-                <ThumbUpIcon htmlColor="#0690FD" fontSize="small" />
-                <Typography ml={1} fontWeight="fontWeightBold">
-                  Like
-                </Typography>
+                <div
+                  style={{
+                    marginTop: "10px",
+                  }}
+                >
+                  {/* *** */}
+                  {/* *** */}
+                  {/* *** */}
+                  {eachPostDetail.post.comments.map(
+                    (eachComment: Comment, index: Key | null | undefined) => {
+                      const user = allUsers.find(
+                        (user) => user._id === eachComment.userId
+                      );
+                      return (
+                        <Box key={index}>
+                          <Box display="flex">
+                            <FaceIcon
+                              fontSize="large"
+                              sx={{ mr: "10px", mt: "10px" }}
+                            />
+                            <Box
+                              display="flex"
+                              flexDirection="column"
+                              // mt="2px"
+                              p={2}
+                              borderRadius="20px"
+                              sx={{ backgroundColor: "white" }}
+                            >
+                              <Typography
+                                fontWeight="fontWeightBold"
+                                sx={{ lineHeight: "0.7" }}
+                              >
+                                {user
+                                  ? `${user.firstName} ${user.lastName}`
+                                  : "Unknown User"}
+                              </Typography>
+                              <Typography variant="caption">
+                                {formatDate(eachComment.createdAt)}
+                              </Typography>
+                              <Typography>{eachComment.content}</Typography>
+                            </Box>
+                          </Box>
+                        </Box>
+                      );
+                    }
+                  )}
+                  {/* *** */}
+                  {/* *** */}
+                  {/* *** */}
+                  <Box
+                    sx={{
+                      position: "sticky",
+                      bottom: 0,
+                      backgroundColor: "#f6f6f6",
+                      paddingTop: "10px",
+                      // paddingBottom: "10px",
+                    }}
+                  >
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      gap={2}
+                      component="form"
+                      onSubmit={handleSubmit}
+                    >
+                      <FaceIcon sx={{ fontSize: "40px" }} />
+                      <TextField
+                        name="content"
+                        multiline
+                        variant="standard"
+                        InputProps={{
+                          disableUnderline: true,
+                          maxRows: 5,
+                        }}
+                        sx={{
+                          margin: "5px 5px 5px 0px",
+                          width: "400px",
+                          backgroundColor: "#c3c0c0",
+                          borderRadius: "10px",
+                          padding: "5px 0px 0px 10px",
+                          height: "80%",
+                        }}
+                        placeholder={`Answer as, name?`}
+                      />
+                      <IconButton type="submit">
+                        <SendIcon
+                          sx={{
+                            "&:hover": {
+                              cursor: "pointer",
+                              backgroundColor: "#ededed",
+                            },
+                          }}
+                        />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </div>
               </Box>
             </Box>
-            <div
-              style={{
-                //   marginBottom: "10px",
-                marginTop: "10px",
-                //   paddingBottom: "10px",
-              }}
-            >
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box display="flex">
-                <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  // mt="2px"
-                  p={2}
-                  borderRadius="20px"
-                  sx={{ backgroundColor: "white" }}
-                >
-                  <Typography
-                    fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
-                  >
-                    Bengi Turer
-                  </Typography>
-                  <Typography variant="caption">2 minutes ago</Typography>
-                  <Typography>
-                    Interested if I can see sample photos.
-                  </Typography>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  position: "sticky",
-                  bottom: 0,
-                  backgroundColor: "#f6f6f6",
-                  paddingTop: "10px",
-                  // paddingBottom: "10px",
-                }}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  gap={2}
-                >
-                  <FaceIcon sx={{ fontSize: "40px" }} />
-                  <TextField
-                    multiline
-                    variant="standard"
-                    InputProps={{
-                      disableUnderline: true,
-                      maxRows: 5,
-                    }}
-                    sx={{
-                      margin: "5px 5px 5px 0px",
-                      width: "400px",
-                      backgroundColor: "#c3c0c0",
-                      borderRadius: "10px",
-                      padding: "5px 0px 0px 10px",
-                      height: "80%",
-                    }}
-                    placeholder={`Answer as, name?`}
-                    onClick={() => {
-                      console.log("post");
-                    }}
-                  />
-                  <SendIcon
-                    sx={{
-                      "&:hover": {
-                        cursor: "pointer",
-                        backgroundColor: "#ededed",
-                      },
-                    }}
-                  />
-                </Box>
-              </Box>
-            </div>
-          </Box>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      )}
     </>
   );
 }
