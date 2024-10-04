@@ -10,8 +10,11 @@ import { useEffect } from "react";
 import { mergedIncomingRequests } from "../redux/UserSlice";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import Loading from "../components/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 function Notification() {
+  const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const token = localStorage.getItem("token");
@@ -49,11 +52,16 @@ function Notification() {
   });
   const acceptFriend = (requestId: any) => {
     console.log("requestId", requestId);
-    mutationAcceptFriendRequest.mutate(requestId);
+    mutationAcceptFriendRequest.mutate(requestId, {
+      onSuccess: () => {
+        navigate("/");
+      },
+    });
   };
 
   return (
     <>
+      {mutationAcceptFriendRequest.isPending && <Loading />}
       <div>
         <Header />
         <div style={{ display: "flex" }}>

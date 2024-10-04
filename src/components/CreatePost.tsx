@@ -1,11 +1,41 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { setCreatePost } from "../redux/PostFeedSlice";
+import { fetchFriendsPosts, setCreatePost } from "../redux/PostFeedSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { PostForm } from "../type";
+import { AppDispatch } from "../redux/Store";
 
 function CreatePost() {
-  const dispatch = useDispatch();
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const URL = `${apiUrl}`;
+  const token = localStorage.getItem("token");
+  const dispatch = useDispatch<AppDispatch>();
+
+  const postCreateMutation = useMutation({
+    mutationFn: async (body: PostForm) => {
+      return axios.post(`${URL}/newPost`, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    onSuccess: (response) => {
+      dispatch(setCreatePost(false));
+      dispatch(fetchFriendsPosts());
+    },
+  });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const body: PostForm = {
+      content: data.get("content") as string,
+    };
+    console.log("body", body);
+    postCreateMutation.mutate(body);
+  };
   return (
     <>
       <Box
@@ -62,7 +92,14 @@ function CreatePost() {
             />
           </div>
         </Box>
-        <Box ml={2} mt={1} display="flex" marginBottom="10px">
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          ml={2}
+          mt={1}
+          display="flex"
+          marginBottom="10px"
+        >
           <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
           <Box paddingRight={4} mt="5px">
             <Typography fontWeight="fontWeightBold" sx={{ lineHeight: "0.7" }}>
@@ -70,6 +107,7 @@ function CreatePost() {
             </Typography>
             <Typography variant="caption">2 minutes ago</Typography>
             <TextField
+              name="content"
               multiline
               variant="standard"
               InputProps={{
@@ -86,11 +124,16 @@ function CreatePost() {
                 minHeight: "124px",
               }}
               placeholder={`What's on your mind, name?`}
-              onClick={() => {
-                console.log("post");
-              }}
             />
-            <Button sx={{ marginTop: "auto" }} fullWidth variant="contained">
+            <Button
+              type="submit"
+              // onClick={() => {
+              //   console.log("post");
+              // }}
+              sx={{ marginTop: "auto" }}
+              fullWidth
+              variant="contained"
+            >
               Post
             </Button>
           </Box>

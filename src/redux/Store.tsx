@@ -4,6 +4,8 @@ import SideBarReducer from "./SideBarSlice";
 import PostFeedSlice from "./PostFeedSlice";
 import NotificationReducer from "./NotificationSlice";
 import UserReducer from "./UserSlice";
+import PostDetailReducer from "./PostDetailSlice";
+import PostReactionReducer from "./PostReactionSlice";
 export const store = configureStore({
   reducer: {
     UserError: UserErrorReducer,
@@ -11,6 +13,8 @@ export const store = configureStore({
     PostFeed: PostFeedSlice,
     Notification: NotificationReducer,
     UserInfo: UserReducer,
+    PostDetail: PostDetailReducer,
+    PostReaction: PostReactionReducer,
   },
 });
 

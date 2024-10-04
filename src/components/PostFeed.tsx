@@ -4,17 +4,23 @@ import EachPost from "./EachPost";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/Store";
 import CreatePost from "./CreatePost";
-import { setCreatePost } from "../redux/PostFeedSlice";
+import { fetchFriendsPosts, setCreatePost } from "../redux/PostFeedSlice";
 import CelebrationIcon from "@mui/icons-material/Celebration";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
-import { fetchUsersInfo } from "../redux/UserSlice";
+import {
+  fetchUsersInfo,
+  myFriendsList,
+  myPendingFriendsListforRequesterUsers,
+} from "../redux/UserSlice";
+import Loading from "./LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 function PostFeed() {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  if (!token) return null;
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const createPost = useSelector(
@@ -23,12 +29,20 @@ function PostFeed() {
   const incomingFriendRequestList = useSelector(
     (state: RootState) => state.UserInfo.incomingFriendRequestList
   );
-  const allUsersInfo = useSelector(
-    (state: RootState) => state.UserInfo.setUsersInfo
+  const myPendingFriendsListforRequesterUsersList = useSelector(
+    (state: RootState) => state.UserInfo.myPendingFriendsListforRequesterUsers
   );
+  const allUsersInfo = useSelector(
+    (state: RootState) => state.UserInfo.allUsers
+  );
+  const myFriendList = useSelector(
+    (state: RootState) => state.UserInfo.myFriendsList
+  );
+  const friendPosts = useSelector(
+    (state: RootState) => state.PostFeed.friendPosts
+  );
+  console.log("friendPosts", friendPosts);
   const myUserId = localStorage.getItem("myUserId");
-  console.log("allUsersInfo", allUsersInfo);
-  console.log("create post", createPost);
   const dispatch = useDispatch<AppDispatch>();
   const mutationAddFriend = useMutation({
     mutationFn: async (friendId) => {
@@ -45,11 +59,15 @@ function PostFeed() {
     onSuccess: (response) => {
       const { message } = response.data;
       console.log(message);
+      window.location.reload();
     },
   });
 
   useEffect(() => {
+    dispatch(myPendingFriendsListforRequesterUsers());
     dispatch(fetchUsersInfo());
+    dispatch(myFriendsList());
+    dispatch(fetchFriendsPosts());
   }, []);
 
   const incomingFriendRequestIds = incomingFriendRequestList.map(
@@ -59,15 +77,14 @@ function PostFeed() {
   const friendSuggestions = allUsersInfo
     .filter((user) => user._id !== myUserId)
     .filter((user) => !incomingFriendRequestIds.includes(user._id));
-  console.log("friendSuggestions", friendSuggestions);
 
   const addFriend = (userId: any) => {
     mutationAddFriend.mutate(userId);
-    console.log("user", userId);
   };
 
   return (
     <>
+      {mutationAddFriend.isPending && <Loading />}
       {createPost && <CreatePost />}
       <Box
         p="20px"
@@ -116,10 +133,11 @@ function PostFeed() {
               }}
             />
           </Box>
-          <EachPost />
-          <EachPost />
-          <EachPost />
-          <EachPost />
+          {friendPosts && friendPosts.length > 0 ? (
+            friendPosts.map((post) => <EachPost post={post} key={post._id} />)
+          ) : (
+            <p>No Post Avaiable</p>
+          )}
         </Box>
         <Box
           // borderLeft="1px solid black"
@@ -143,69 +161,83 @@ function PostFeed() {
               <Typography fontWeight={700} color="#939090" mt={3}>
                 Friends
               </Typography>
-              <Box>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  flexDirection="row"
-                  pt={1}
-                  pb={1}
-                  sx={{
-                    "&:hover": {
-                      cursor: "pointer",
-                      backgroundColor: "#ededed",
-                    },
-                  }}
-                >
-                  <FaceIcon sx={{ fontSize: "40px" }} />
-                  <Typography fontWeight="bold" ml={2}>
-                    Bengi Turer
-                  </Typography>
+              {myFriendList.length > 0 ? (
+                <Box>
+                  {myFriendList.map((friend) => (
+                    <Box
+                      key={friend._id}
+                      display="flex"
+                      alignItems="center"
+                      flexDirection="row"
+                      pt={1}
+                      pb={1}
+                      onClick={() => navigate(`profile/${friend._id}`)}
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          backgroundColor: "#ededed",
+                        },
+                      }}
+                    >
+                      <FaceIcon sx={{ fontSize: "40px" }} />
+                      <Typography fontWeight="bold" ml={2}>
+                        {friend.firstName} {friend.lastName}
+                      </Typography>
+                    </Box>
+                  ))}
                 </Box>
-              </Box>
+              ) : (
+                <Typography fontWeight={700} mt={3}>
+                  No Friends
+                </Typography>
+              )}
             </Box>
-            {/*  */}
-            {/*  */}
-            {/*  */}
             {friendSuggestions.length > 0 ? (
               <Box borderTop="1px solid #c3c0c0" mb={1}>
                 <Typography fontWeight={700} color="#939090" mt={3}>
                   Contacts
                 </Typography>
                 <Box>
-                  {friendSuggestions.map((user) => (
-                    <Box
-                      key={user._id}
-                      display="flex"
-                      alignItems="center"
-                      flexDirection="row"
-                      pt={1}
-                      pb={1}
-                    >
-                      <FaceIcon sx={{ fontSize: "40px" }} />
-                      <Typography fontWeight="bold" ml={2}>
-                        {user.firstName} {user.lastName}
-                      </Typography>
-                      <PersonAddIcon
-                        htmlColor="#0690FD"
-                        onClick={() => addFriend(user._id)}
-                        sx={{
-                          ml: "10px",
-                          "&:hover": {
-                            cursor: "pointer",
-                          },
-                        }}
-                      />
-                    </Box>
-                  ))}
+                  {friendSuggestions
+                    .filter(
+                      (user) =>
+                        !myFriendList.some(
+                          (friend) => friend._id === user._id
+                        ) &&
+                        !myPendingFriendsListforRequesterUsersList.some(
+                          (pending) => pending.receiverId === user._id
+                        )
+                    )
+                    .map((user) => (
+                      <Box
+                        key={user._id}
+                        display="flex"
+                        alignItems="center"
+                        flexDirection="row"
+                        pt={1}
+                        pb={1}
+                      >
+                        <FaceIcon sx={{ fontSize: "40px" }} />
+                        <Typography fontWeight="bold" ml={2}>
+                          {user.firstName} {user.lastName}
+                        </Typography>
+                        <PersonAddIcon
+                          htmlColor="#0690FD"
+                          onClick={() => addFriend(user._id)}
+                          sx={{
+                            ml: "10px",
+                            "&:hover": {
+                              cursor: "pointer",
+                            },
+                          }}
+                        />
+                      </Box>
+                    ))}
                 </Box>
               </Box>
             ) : (
               <Typography>No New Contacts</Typography>
             )}
-            {/*  */}
-            {/*  */}
-            {/*  */}
           </Box>
         </Box>
       </Box>

@@ -1,4 +1,4 @@
-import { CardContent } from "@mui/material";
+import { Box, CardContent, Typography } from "@mui/material";
 import Person2Icon from "@mui/icons-material/Person2";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -25,6 +25,9 @@ function Sidebar() {
   const handleButtonClick = (buttonId: string) => {
     dispatch(setActiveButton(buttonId));
   };
+  const allUsersInfo = useSelector(
+    (state: RootState) => state.UserInfo.allUsers
+  );
 
   const navigate = useNavigate();
 
@@ -50,15 +53,32 @@ function Sidebar() {
           minHeight: "80vh",
         }}
       >
+        {allUsersInfo.map((user) => (
+          <Box key={user._id}>
+            {user._id === myUserId ? (
+              <Typography
+                padding="20px 0 30px 30px"
+                fontWeight="fontWeightBold"
+                sx={{
+                  "&:hover": {
+                    cursor: "pointer",
+                    color: "#0043B7",
+                    backgroundColor: "#ededed",
+                  },
+                  lineHeight: "0.7",
+                }}
+              >
+                {user.firstName} {user.lastName}
+              </Typography>
+            ) : null}
+          </Box>
+        ))}
         <TypographyButton onClick={() => navigate("/")}>
           <FeedIcon sx={{ marginRight: "5px" }} /> Home
         </TypographyButton>
         <TypographyButton onClick={() => navigate("/profile")}>
           {/* Replace "1" with the user's actual ID when dynamic */}
           <Person2Icon sx={{ marginRight: "5px" }} /> Profile
-        </TypographyButton>
-        <TypographyButton onClick={() => navigate("/postpage")}>
-          <Diversity3Icon sx={{ marginRight: "5px" }} /> Post Page
         </TypographyButton>
         {!notificationBar ? (
           <TypographyButton onClick={() => navigate("/notification")}>
@@ -70,6 +90,7 @@ function Sidebar() {
             Notification
           </TypographyButton>
         )}
+
         <TypographyButton
           onClick={() => {
             localStorage.removeItem("myUserId");

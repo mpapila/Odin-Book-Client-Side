@@ -13,7 +13,7 @@ function Router() {
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/profile/" element={<Profile />} />
-      <Route path="/postpage" element={<PostPage />} />
+      <Route path="/posts/:id" element={<PostPage />} />
       <Route path="/notification" element={<Notification />} />
     </Routes>
   );

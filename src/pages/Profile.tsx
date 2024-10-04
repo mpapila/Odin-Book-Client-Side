@@ -161,10 +161,10 @@ function Profile() {
               </Typography>
             </Box>
             <Box mt={3} width="70vw">
+              {/* <EachPost />
               <EachPost />
               <EachPost />
-              <EachPost />
-              <EachPost />
+              <EachPost /> */}
             </Box>
           </Box>
         </div>
