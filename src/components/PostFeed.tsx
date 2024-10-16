@@ -17,6 +17,7 @@ import {
 } from "../redux/UserSlice";
 import Loading from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { formatBirthDate } from "../utils";
 
 function PostFeed() {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ function PostFeed() {
       window.location.reload();
     },
   });
+  const now: Date = new Date();
 
   useEffect(() => {
     dispatch(myPendingFriendsListforRequesterUsers());
@@ -141,22 +143,49 @@ function PostFeed() {
         </Box>
         <Box
           // borderLeft="1px solid black"
-          sx={{ maxWidth: "40vw" }}
+          sx={{ maxWidth: "25vw" }}
         >
           <Box>
             <Typography pr={15} color="#939090" fontWeight={700}>
               Birthdays
             </Typography>
-            <Box
-              display="flex"
-              alignItems="center"
-              flexDirection="row"
-              mt={3}
-              mb={3}
-            >
-              <CelebrationIcon />
-              <Typography ml={2}>Bora Papila's birthday is today.</Typography>
-            </Box>
+            {/*  */}
+            {/*  */}
+            {/*  */}
+            {myFriendList.length > 0 && (
+              <Box
+                display="flex"
+                alignItems="self-start"
+                flexDirection="column"
+                gap={1}
+                mt={3}
+                mb={3}
+              >
+                {myFriendList.map((friend, index) => (
+                  <Box
+                    key={index}
+                    display="flex"
+                    alignItems="center"
+                    onClick={() => navigate(`profile/${friend._id}`)}
+                    sx={{
+                      "&:hover": {
+                        cursor: "pointer",
+                        backgroundColor: "#ededed",
+                      },
+                    }}
+                  >
+                    <CelebrationIcon />
+                    <Typography ml={2}>
+                      {friend.firstName} {friend.lastName}
+                      's birthday is {formatBirthDate(friend.dateOfBirth)}.
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            )}
+            {/*  */}
+            {/*  */}
+            {/*  */}
             <Box borderTop="1px solid #c3c0c0" mb={1}>
               <Typography fontWeight={700} color="#939090" mt={3}>
                 Friends
