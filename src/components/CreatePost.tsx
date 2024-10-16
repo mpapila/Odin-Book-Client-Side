@@ -1,14 +1,19 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchFriendsPosts, setCreatePost } from "../redux/PostFeedSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import FaceIcon from "@mui/icons-material/Face";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { PostForm } from "../type";
-import { AppDispatch } from "../redux/Store";
+import { AppDispatch, RootState } from "../redux/Store";
+import { fetchUsersInfo } from "../redux/UserSlice";
 
 function CreatePost() {
+  const allUsers = useSelector((state: RootState) => state.UserInfo.allUsers);
+  console.log("allUsers", allUsers);
+  const myUserId = localStorage.getItem("myUserId");
+  console.log("myUserId", myUserId);
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const token = localStorage.getItem("token");
@@ -79,6 +84,7 @@ function CreatePost() {
           </Typography>
           <div
             onClick={() => {
+              dispatch(fetchUsersInfo());
               dispatch(setCreatePost(false));
             }}
           >
@@ -101,42 +107,53 @@ function CreatePost() {
           marginBottom="10px"
         >
           <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
-          <Box paddingRight={4} mt="5px">
-            <Typography fontWeight="fontWeightBold" sx={{ lineHeight: "0.7" }}>
-              Mehmet Papila
-            </Typography>
-            <Typography variant="caption">2 minutes ago</Typography>
-            <TextField
-              name="content"
-              multiline
-              variant="standard"
-              InputProps={{
-                disableUnderline: true,
-                maxRows: 5,
-              }}
-              sx={{
-                margin: "5px 5px 5px 0px",
-                width: "400px",
-                // backgroundColor: "#c3c0c0",
-                borderRadius: "10px",
-                padding: "5px 0px 0px 10px",
-                height: "80%",
-                minHeight: "124px",
-              }}
-              placeholder={`What's on your mind, name?`}
-            />
-            <Button
-              type="submit"
-              // onClick={() => {
-              //   console.log("post");
-              // }}
-              sx={{ marginTop: "auto" }}
-              fullWidth
-              variant="contained"
-            >
-              Post
-            </Button>
-          </Box>
+          {allUsers.map((userOne) => (
+            <Box mt="5px" key={userOne._id}>
+              {userOne._id === myUserId ? (
+                <Box mr={4}>
+                  <Typography
+                    fontWeight="fontWeightBold"
+                    sx={{ lineHeight: "0.7" }}
+                    ml={1}
+                    mb={1}
+                  >
+                    {userOne.firstName} {userOne.lastName}
+                  </Typography>
+
+                  <TextField
+                    name="content"
+                    multiline
+                    variant="standard"
+                    InputProps={{
+                      disableUnderline: true,
+                      maxRows: 5,
+                    }}
+                    sx={{
+                      margin: "5px 5px 5px 0px",
+                      width: "400px",
+                      // backgroundColor: "#c3c0c0",
+                      borderRadius: "10px",
+                      padding: "5px 0px 0px 10px",
+                      height: "80%",
+                      minHeight: "124px",
+                    }}
+                    placeholder={`What's on your mind, ${userOne.firstName}?`}
+                  />
+                  <Button
+                    type="submit"
+                    // onClick={() => {
+                    //   console.log("post");
+                    // }}
+                    sx={{ marginTop: "auto" }}
+                    fullWidth
+                    variant="contained"
+                  >
+                    Post
+                  </Button>
+                </Box>
+              ) : null}
+            </Box>
+          ))}
         </Box>
       </Box>
     </>
