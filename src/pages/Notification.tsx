@@ -12,6 +12,11 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Loading from "../components/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import {
+  fetchAllNotifications,
+  setNotificationRead,
+} from "../redux/NotificationSlice";
+import { AllNotifications } from "../type";
 
 function Notification() {
   const navigate = useNavigate();
@@ -22,12 +27,18 @@ function Notification() {
   const isNotificationNew = useSelector(
     (state: RootState) => state.Notification.setNotificationRead
   );
+  const allNotifications: AllNotifications = useSelector(
+    (state: RootState) => state.Notification.allNotifications
+  );
+  console.log("birthday today", allNotifications.birthdaysToday);
   const mergedIncomingRequestsList = useSelector(
     (state: RootState) => state.UserInfo.mergedIncomingRequestsList
   );
+  console.log("allNotifications", allNotifications);
 
   useEffect(() => {
     dispatch(mergedIncomingRequests());
+    dispatch(fetchAllNotifications());
   }, []);
   console.log("mergedIncomingRequestsList", mergedIncomingRequestsList);
 
@@ -50,6 +61,7 @@ function Notification() {
       console.log("message", message);
     },
   });
+
   const acceptFriend = (requestId: any) => {
     console.log("requestId", requestId);
     mutationAcceptFriendRequest.mutate(requestId, {
@@ -77,46 +89,52 @@ function Notification() {
             </Box>
             {mergedIncomingRequestsList.length > 0 && (
               <Box>
-                {mergedIncomingRequestsList.map((request) => (
-                  <Box
-                    key={request.requesterId}
-                    sx={{
-                      "&:hover": {
-                        cursor: "pointer",
-                        backgroundColor: "#ededed",
-                      },
-                    }}
-                    display="flex"
-                    alignItems="center"
-                    gap={1}
-                  >
-                    <FaceIcon sx={{ fontSize: "50px" }} />
-                    <Box display="flex" gap={0} alignItems="center">
-                      <Typography mr={1} fontWeight="bold">
-                        {request.firstname} {request.lastname}
-                      </Typography>
-                      <Typography>added you as a friend</Typography>
-                      <Typography
-                        ml={1}
-                        mr={1}
-                        fontSize="small"
-                        color="success"
-                        // color="textSecondary"
-                      >
-                        7h
-                      </Typography>
-                      <FiberManualRecordIcon color="success" />
-                      <Button
-                        onClick={() => acceptFriend(request.requestId)}
-                        sx={{ ml: "10px" }}
-                        size="small"
-                        variant="contained"
-                      >
-                        Accept
-                      </Button>
+                {mergedIncomingRequestsList.map((request) => {
+                  dispatch(setNotificationRead(true));
+                  return (
+                    <Box
+                      key={request.requesterId}
+                      sx={{
+                        "&:hover": {
+                          cursor: "pointer",
+                          backgroundColor: "#ededed",
+                        },
+                      }}
+                      display="flex"
+                      alignItems="center"
+                      gap={1}
+                    >
+                      <FaceIcon sx={{ fontSize: "50px" }} />
+                      <Box display="flex" gap={0} alignItems="center">
+                        <Typography mr={1} fontWeight="bold">
+                          {request.firstname} {request.lastname}
+                        </Typography>
+                        <Typography>added you as a friend</Typography>
+                        <Typography
+                          ml={1}
+                          mr={1}
+                          fontSize="small"
+                          color="success"
+                          // color="textSecondary"
+                        >
+                          7h
+                        </Typography>
+                        <FiberManualRecordIcon color="success" />
+                        <Button
+                          onClick={() => {
+                            dispatch(setNotificationRead(false));
+                            acceptFriend(request.requestId);
+                          }}
+                          sx={{ ml: "10px" }}
+                          size="small"
+                          variant="contained"
+                        >
+                          Accept
+                        </Button>
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
+                  );
+                })}
               </Box>
             )}
             <Box>
@@ -132,34 +150,45 @@ function Notification() {
                 alignItems="center"
                 gap={1}
               >
-                <FaceIcon sx={{ fontSize: "50px" }} />
-                <Box display="flex" gap={0}>
-                  <Typography mr={1} fontWeight="bold">
-                    Bengi Turer
-                  </Typography>
-                  <Typography>'s Birthday Today</Typography>
-                </Box>
+                {allNotifications.birthdaysToday &&
+                  allNotifications.birthdaysToday.map((notification, index) => (
+                    <Box display="flex" alignItems="center" gap={1} key={index}>
+                      <FaceIcon sx={{ fontSize: "50px" }} />
+                      <Box display="flex" flexDirection="row">
+                        <Typography fontWeight="bold">
+                          {notification.firstName} {notification.lastName}
+                        </Typography>
+                        <Typography>'s Birthday Today</Typography>
+                      </Box>
+                    </Box>
+                  ))}
               </Box>
-              <Box
-                sx={{
-                  "&:hover": {
-                    cursor: "pointer",
-                    backgroundColor: "#ededed",
-                  },
-                }}
-                color="GrayText"
-                display="flex"
-                alignItems="center"
-                gap={1}
-              >
-                <FaceIcon sx={{ fontSize: "50px" }} />
-                <Box display="flex" gap={0}>
-                  <Typography mr={1} fontWeight="bold">
-                    Bora Papila
-                  </Typography>
-                  <Typography>updated their's profile</Typography>
-                </Box>
-              </Box>
+              {allNotifications.notifications &&
+                allNotifications.notifications.map((notification) => (
+                  <Box
+                    key={notification._id}
+                    onClick={() => {
+                      if (notification.postId) {
+                        navigate(`/posts/${notification.postId}`);
+                      }
+                    }}
+                    sx={{
+                      "&:hover": {
+                        cursor: "pointer",
+                        backgroundColor: "#ededed",
+                      },
+                    }}
+                    // color="GrayText"
+                    display="flex"
+                    alignItems="center"
+                    gap={1}
+                  >
+                    <FaceIcon sx={{ fontSize: "50px" }} />
+                    <Box display="flex" gap={0}>
+                      <Typography>{notification.message}</Typography>
+                    </Box>
+                  </Box>
+                ))}
             </Box>
           </Box>
         </div>
