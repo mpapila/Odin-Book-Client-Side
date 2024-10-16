@@ -3,28 +3,34 @@ import FaceIcon from "@mui/icons-material/Face";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useNavigate } from "react-router-dom";
-import { EachPostProps, PostReactionData, PostReactionState } from "../type";
+import {
+  EachPostProps,
+  LastComment,
+  PostReactionData,
+  PostReactionState,
+} from "../type";
 import { formatDate } from "../utils";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/Store";
-import { getLikeAttribution } from "../redux/PostReactionSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/Store";
 
 export const EachPost = ({ post }: EachPostProps) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
-  // const isLiked = useSelector((state: RootState) => state.PostReaction.isLiked);
-  console.log("isLiked", isLiked);
   const [likesCount, setLikesCount] = useState(post.likes.length);
+
+  const allUsers = useSelector((state: RootState) => state.UserInfo.allUsers);
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+  const lastComment: LastComment | null =
+    post.comments[post.comments.length - 1];
 
   const mutationLikeGet = useMutation<PostReactionState, unknown, string>({
     mutationFn: async (postId) => {
+      // one that It works
       return axios.get(`${URL}/postAttribute`, {
         params: { postId },
         headers: {
@@ -55,8 +61,7 @@ export const EachPost = ({ post }: EachPostProps) => {
         }
       );
     },
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: (_response) => {
       setIsLiked((prevIsLiked) => !prevIsLiked);
       setLikesCount((prevCount) => (isLiked ? prevCount - 1 : prevCount + 1));
     },
@@ -68,10 +73,8 @@ export const EachPost = ({ post }: EachPostProps) => {
   useEffect(() => {
     if (post?._id) {
       mutationLikeGet.mutate(post._id);
-      // dispatch(getLikeAttribution(post._id));
     }
   }, []);
-  console.log("post", post);
   return (
     <Box
       padding="12px 16px"
@@ -86,10 +89,7 @@ export const EachPost = ({ post }: EachPostProps) => {
         }}
       >
         <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
-        <Box
-          mt="5px"
-          // onClick={() => navigate(`profile/${friend._id}`)}
-        >
+        <Box mt="5px" onClick={() => navigate(`/profile/${post.userId}`)}>
           <Typography
             fontWeight="fontWeightBold"
             sx={{
@@ -122,7 +122,6 @@ export const EachPost = ({ post }: EachPostProps) => {
             <ThumbUpIcon htmlColor="#0690FD" fontSize="small" />
             <Typography ml={1} color="#c3c0c0">
               {likesCount}
-              {/* {postReaction.likesCount} */}
             </Typography>
           </Box>
           <Box display="flex" flexDirection="row">
@@ -168,7 +167,7 @@ export const EachPost = ({ post }: EachPostProps) => {
           flexDirection="row"
           alignItems="center"
           onClick={() => {
-            navigate(`posts/${post._id}`);
+            navigate(`/posts/${post._id}`);
           }}
           mt={1}
           mb={1}
@@ -186,55 +185,71 @@ export const EachPost = ({ post }: EachPostProps) => {
           </Typography>
         </Box>
       </Box>
-      <div
-        style={{
-          marginBottom: "10px",
-          marginTop: "10px",
-        }}
-      >
-        <Typography
-          color="#939090"
-          fontSize="15px"
-          onClick={() => {
-            navigate(`posts/${post._id}`);
-          }}
-          fontWeight={700}
-          sx={{
-            "&:hover": {
-              cursor: "pointer",
-            },
+      {lastComment ? (
+        <div
+          style={{
+            marginBottom: "10px",
+            marginTop: "10px",
           }}
         >
-          View More Comment
-        </Typography>
-        <Box display="flex">
-          <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
-          <Box
-            display="flex"
-            flexDirection="column"
-            // mt="2px"
-            p={2}
-            borderRadius="20px"
-            sx={{ backgroundColor: "white" }}
+          <Typography
+            color="#939090"
+            fontSize="15px"
+            onClick={() => {
+              navigate(`/posts/${post._id}`);
+            }}
+            fontWeight={700}
+            sx={{
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
           >
-            <Typography
-              fontWeight="fontWeightBold"
-              sx={{
-                "&:hover": {
-                  cursor: "pointer",
-                  color: "#0043B7",
-                  // backgroundColor: "#ededed",
-                },
-                lineHeight: "0.7",
-              }}
+            View More Comment
+          </Typography>
+          <Box display="flex">
+            <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
+            <Box
+              display="flex"
+              flexDirection="column"
+              // mt="2px"
+              p={2}
+              borderRadius="20px"
+              sx={{ backgroundColor: "white" }}
             >
-              Bengi Turer
-            </Typography>
-            <Typography variant="caption">2 minutes ago</Typography>
-            <Typography>Interested if I can see sample photos.</Typography>
+              <Typography
+                fontWeight="fontWeightBold"
+                onClick={() => navigate(`/profile/${lastComment.userId}`)}
+                sx={{
+                  "&:hover": {
+                    cursor: "pointer",
+                    color: "#0043B7",
+                  },
+                  lineHeight: "0.7",
+                }}
+              >
+                {allUsers.length > 0 &&
+                  (() => {
+                    const user = allUsers.find(
+                      (eachUser) => eachUser._id === lastComment.userId
+                    );
+                    return user
+                      ? `${user.firstName} ${user.lastName}`
+                      : "Unknown User";
+                  })()}
+              </Typography>
+              <Typography variant="caption">
+                {formatDate(lastComment.createdAt)}
+              </Typography>
+              <Typography>{lastComment.content}</Typography>
+            </Box>
           </Box>
-        </Box>
-      </div>
+        </div>
+      ) : (
+        <Typography color="#939090" fontSize="15px" mt={2}>
+          No comments
+        </Typography>
+      )}
     </Box>
   );
 };
