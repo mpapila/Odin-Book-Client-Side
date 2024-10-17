@@ -6,10 +6,10 @@ import SendIcon from "@mui/icons-material/Send";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Footer from "../components/Footer";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Key, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPostbyId } from "../redux/PostDetailSlice";
+import { getPostbyId, setComment } from "../redux/PostDetailSlice";
 import { AppDispatch, RootState } from "../redux/Store";
 import { formatDate } from "../utils";
 import { useMutation } from "@tanstack/react-query";
@@ -23,6 +23,9 @@ import axios from "axios";
 import { fetchUsersInfo } from "../redux/UserSlice";
 
 function PostPage() {
+  const navigate = useNavigate();
+  // const [comment, setComment] = useState("");
+  const comment = useSelector((state: RootState) => state.PostDetail.comment);
   const dispatch = useDispatch<AppDispatch>();
   const postId = useParams().id;
   const eachPostDetail = useSelector(
@@ -36,6 +39,7 @@ function PostPage() {
   const [likesCount, setLikesCount] = useState(
     eachPostDetail?.post?.likes?.length || 0
   );
+  console.log("likescount", likesCount);
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const token = localStorage.getItem("token");
@@ -113,6 +117,7 @@ function PostPage() {
     console.log("body", body);
     if (postId) {
       mutationCreateCommentPost.mutate(body);
+      dispatch(setComment(""));
     }
   };
 
@@ -154,7 +159,16 @@ function PostPage() {
                 <Box mt="5px">
                   <Typography
                     fontWeight="fontWeightBold"
-                    sx={{ lineHeight: "0.7" }}
+                    onClick={() =>
+                      navigate(`/profile/${eachPostDetail.post?.userId}`)
+                    }
+                    sx={{
+                      "&:hover": {
+                        cursor: "pointer",
+                        color: "#0043B7",
+                      },
+                      lineHeight: "0.7",
+                    }}
                   >
                     {eachPostDetail.nameInfo.firstName}{" "}
                     {eachPostDetail.nameInfo.lastName}
@@ -183,7 +197,7 @@ function PostPage() {
                   <Box display="flex" flexDirection="row">
                     <CommentIcon fontSize="small" htmlColor="#0690FD" />
                     <Typography ml={1} color="#c3c0c0">
-                      2
+                      {eachPostDetail.post.comments.length}
                     </Typography>
                   </Box>
                 </Box>
@@ -267,7 +281,16 @@ function PostPage() {
                             >
                               <Typography
                                 fontWeight="fontWeightBold"
-                                sx={{ lineHeight: "0.7" }}
+                                onClick={() =>
+                                  navigate(`/profile/${user?._id}`)
+                                }
+                                sx={{
+                                  "&:hover": {
+                                    cursor: "pointer",
+                                    color: "#0043B7",
+                                  },
+                                  lineHeight: "0.7",
+                                }}
                               >
                                 {user
                                   ? `${user.firstName} ${user.lastName}`
@@ -306,6 +329,8 @@ function PostPage() {
                       <FaceIcon sx={{ fontSize: "40px" }} />
                       <TextField
                         name="content"
+                        value={comment}
+                        onChange={(e) => dispatch(setComment(e.target.value))}
                         multiline
                         variant="standard"
                         InputProps={{
