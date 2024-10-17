@@ -3,11 +3,11 @@ import axios from "axios";
 import { EachPostDetail } from "../type";
 
 const initialState: {
-  eachPostDetail: EachPostDetail | null;
-  nameInfoForComment?: string[];
+  eachPostDetail: EachPostDetail | null | undefined;
+  comment: string;
 } = {
   eachPostDetail: null,
-  nameInfoForComment: [],
+  comment: "",
 };
 
 export const getPostbyId = createAsyncThunk(
@@ -28,7 +28,11 @@ export const getPostbyId = createAsyncThunk(
 const PostDetailSlice = createSlice({
   name: "postDetail",
   initialState,
-  reducers: {},
+  reducers: {
+    setComment: (state, action) => {
+      state.comment = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getPostbyId.fulfilled, (state, action) => {
       state.eachPostDetail = action.payload;
@@ -36,5 +40,5 @@ const PostDetailSlice = createSlice({
   },
 });
 
-export const {} = PostDetailSlice.actions;
+export const { setComment } = PostDetailSlice.actions;
 export default PostDetailSlice.reducer;
