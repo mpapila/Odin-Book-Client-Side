@@ -27,7 +27,7 @@ function CreatePost() {
         },
       });
     },
-    onSuccess: (response) => {
+    onSuccess: (_response) => {
       dispatch(setCreatePost(false));
       dispatch(fetchFriendsPosts());
     },
@@ -64,7 +64,6 @@ function CreatePost() {
           minHeight: "350px",
           borderRadius: 1,
           boxShadow: 24,
-          // p: 4,
           zIndex: 10,
           backgroundColor: "white",
         }}
@@ -106,7 +105,23 @@ function CreatePost() {
           display="flex"
           marginBottom="10px"
         >
-          <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
+          {allUsers.map((user) => {
+            if (user._id === myUserId) {
+              return user.profilePhoto.length === 0 ? (
+                <FaceIcon key={user._id} fontSize="large" sx={{ mr: "10px" }} />
+              ) : (
+                <img
+                  key={user._id}
+                  src={user.profilePhoto}
+                  width="32px"
+                  height="32px"
+                  alt="Profile"
+                />
+              );
+            }
+            return null;
+          })}
+
           {allUsers.map((userOne) => (
             <Box mt="5px" key={userOne._id}>
               {userOne._id === myUserId ? (
@@ -131,7 +146,6 @@ function CreatePost() {
                     sx={{
                       margin: "5px 5px 5px 0px",
                       width: "400px",
-                      // backgroundColor: "#c3c0c0",
                       borderRadius: "10px",
                       padding: "5px 0px 0px 10px",
                       height: "80%",
@@ -141,9 +155,6 @@ function CreatePost() {
                   />
                   <Button
                     type="submit"
-                    // onClick={() => {
-                    //   console.log("post");
-                    // }}
                     sx={{ marginTop: "auto" }}
                     fullWidth
                     variant="contained"
