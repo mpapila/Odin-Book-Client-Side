@@ -1,11 +1,11 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import { useNavigate } from "react-router-dom";
 import {
+  Comment,
   EachPostProps,
-  LastComment,
   PostReactionData,
   PostReactionState,
 } from "../type";
@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 
 export const EachPost = ({ post }: EachPostProps) => {
+  console.log("post", post);
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes.length);
@@ -25,8 +26,10 @@ export const EachPost = ({ post }: EachPostProps) => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const token = localStorage.getItem("token");
-  const lastComment: LastComment | null =
-    post.comments[post.comments.length - 1];
+  const lastComment: Comment = post.comments[post.comments.length - 1];
+
+  console.log("lastcomment", lastComment);
+  console.log("post.comments", post.comments);
 
   const mutationLikeGet = useMutation<PostReactionState, unknown, string>({
     mutationFn: async (postId) => {
@@ -75,10 +78,14 @@ export const EachPost = ({ post }: EachPostProps) => {
       mutationLikeGet.mutate(post._id);
     }
   }, []);
+  const theme = useTheme();
+
+  const isPhoneScreen = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <Box
       padding="12px 16px"
       boxShadow="2"
+      mr={isPhoneScreen ? 3 : 0}
       sx={{ backgroundColor: "#f6f6f6", className: "eachPost" }}
       marginBottom="30px"
     >
@@ -88,13 +95,22 @@ export const EachPost = ({ post }: EachPostProps) => {
           marginBottom: "10px",
         }}
       >
-        <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
+        {post.profilePhoto.length == 0 ? (
+          <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
+        ) : (
+          <img
+            src={post.profilePhoto}
+            width="32"
+            style={{ marginRight: "10px" }}
+          />
+        )}
         <Box mt="5px" onClick={() => navigate(`/profile/${post.userId}`)}>
           <Typography
             fontWeight="fontWeightBold"
             sx={{
               "&:hover": {
                 cursor: "pointer",
+                // color: "#0043B7",
                 color: "#0043B7",
                 backgroundColor: "#ededed",
               },
@@ -208,7 +224,26 @@ export const EachPost = ({ post }: EachPostProps) => {
             View More Comment
           </Typography>
           <Box display="flex">
-            <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
+            {allUsers.length > 0 &&
+              (() => {
+                const user = allUsers.find(
+                  (eachUser) => eachUser._id === lastComment.userId
+                );
+
+                return user?.profilePhoto ? (
+                  <img
+                    src={user.profilePhoto}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      marginRight: "10px",
+                      marginTop: "10px",
+                    }}
+                  />
+                ) : (
+                  <FaceIcon fontSize="large" sx={{ mr: "10px", mt: "10px" }} />
+                );
+              })()}
             <Box
               display="flex"
               flexDirection="column"
