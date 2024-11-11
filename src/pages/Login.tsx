@@ -1,13 +1,6 @@
 import BookIcon from "/book.png";
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
