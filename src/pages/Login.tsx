@@ -1,3 +1,5 @@
+import BookIcon from "/book.png";
+
 import {
   Avatar,
   Box,
@@ -6,9 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ContactMailIcon from "@mui/icons-material/Forum";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 import React from "react";
@@ -70,6 +70,12 @@ function Login() {
     mutation.mutate(body);
   };
 
+  const handleDemoAccountClick = () => {
+    localStorage.setItem("token", `${demoToken}`);
+    localStorage.setItem("myUserId", "672e38dee53d439d9c06c5c1");
+    navigate("/");
+  };
+
   return (
     <>
       {mutation.isPending && <Loading />}
@@ -78,7 +84,7 @@ function Login() {
           maxWidth="sm"
           className="full-background"
           sx={{
-            // backgroundColor: "#202C33",
+            backgroundColor: "#F6F6F6",
             height: "100vh",
             display: "flex",
             flexDirection: "column",
@@ -88,10 +94,13 @@ function Login() {
           }}
         >
           <Box display="flex" flexDirection="row" alignItems="center">
-            <ContactMailIcon
-              color="success"
-              sx={{ width: "60px", height: "60px" }}
-            />
+            <Box
+              component="img"
+              src={BookIcon}
+              alt="Book Icon"
+              width="60px"
+              // height="60px"
+            ></Box>
             <Typography ml={3} fontSize="30px">
               Odin Book
             </Typography>
@@ -105,9 +114,6 @@ function Login() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
             <Typography component="h1" variant="h5">
               Log In
             </Typography>
@@ -152,7 +158,7 @@ function Login() {
                 fullWidth
                 variant="contained"
                 sx={{ mb: 2 }}
-                // onClick={handleDemoAccountClick}
+                onClick={handleDemoAccountClick}
               >
                 Try a Demo Account
               </Button>
