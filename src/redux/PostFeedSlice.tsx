@@ -5,6 +5,8 @@ import axios from "axios";
 const initialState: PostFeedState = {
   setCreatePost: false,
   friendPosts: [],
+  rightSidebarOpen: false,
+  leftSidebarOpen: false,
 };
 
 export const fetchFriendsPosts = createAsyncThunk(
@@ -29,6 +31,12 @@ const PostFeedSlice = createSlice({
     setCreatePost: (state: PostFeedState, action) => {
       state.setCreatePost = action.payload;
     },
+    setRightSideBarOpen: (state: PostFeedState, action) => {
+      state.rightSidebarOpen = action.payload;
+    },
+    setLeftSidebarOpen: (state, action) => {
+      state.leftSidebarOpen = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchFriendsPosts.fulfilled, (state, action) => {
@@ -37,5 +45,6 @@ const PostFeedSlice = createSlice({
   },
 });
 
-export const { setCreatePost } = PostFeedSlice.actions;
+export const { setCreatePost, setRightSideBarOpen, setLeftSidebarOpen } =
+  PostFeedSlice.actions;
 export default PostFeedSlice.reducer;
