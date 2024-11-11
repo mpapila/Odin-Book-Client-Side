@@ -5,7 +5,8 @@ import PostFeedSlice from "./PostFeedSlice";
 import NotificationReducer from "./NotificationSlice";
 import UserReducer from "./UserSlice";
 import PostDetailReducer from "./PostDetailSlice";
-import PostReactionReducer from "./PostReactionSlice";
+import UserProfileReducer from "./UserProfileSlice";
+import PhotoReducer from "./PhotoSlice";
 export const store = configureStore({
   reducer: {
     UserError: UserErrorReducer,
@@ -14,7 +15,8 @@ export const store = configureStore({
     Notification: NotificationReducer,
     UserInfo: UserReducer,
     PostDetail: PostDetailReducer,
-    PostReaction: PostReactionReducer,
+    UserProfile: UserProfileReducer,
+    Photo: PhotoReducer,
   },
 });
 
