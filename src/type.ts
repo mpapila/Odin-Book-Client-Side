@@ -90,7 +90,7 @@ export interface friendPostsType {
   userId?: string;
   content: string;
   likes: string[];
-  comments: string[];
+  comments: Comment[];
   firstName: string;
   lastName: string;
   createdAt: string;
