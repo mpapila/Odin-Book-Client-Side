@@ -1,4 +1,11 @@
-import { Box, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import FaceIcon from "@mui/icons-material/Face";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
@@ -24,8 +31,7 @@ import { fetchUsersInfo } from "../redux/UserSlice";
 
 function PostPage() {
   const navigate = useNavigate();
-  // const [comment, setComment] = useState("");
-  const comment = useSelector((state: RootState) => state.PostDetail.comment);
+  const myUserId = localStorage.getItem("myUserId");
   const dispatch = useDispatch<AppDispatch>();
   const postId = useParams().id;
   const eachPostDetail = useSelector(
@@ -35,11 +41,13 @@ function PostPage() {
   const allUsers = useSelector((state: RootState) => state.UserInfo.allUsers);
   console.log("allusers", allUsers);
 
+  const myInfo = allUsers.filter((user) => user._id == myUserId);
+  console.log("myinfo", myInfo[0].firstName);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(
     eachPostDetail?.post?.likes?.length || 0
   );
-  console.log("likescount", likesCount);
+  // console.log("likescount", likesCount);
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}`;
   const token = localStorage.getItem("token");
@@ -99,8 +107,8 @@ function PostPage() {
     },
   });
 
-  console.log("postid", postId);
-  console.log("eachPostDetail", eachPostDetail);
+  // console.log("postid", postId);
+  // console.log("eachPostDetail", eachPostDetail);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -128,6 +136,14 @@ function PostPage() {
       mutationLikeGet.mutate(postId);
     }
   }, []);
+  const theme = useTheme();
+  const leftSidebarOpen = useSelector(
+    (state: RootState) => state.PostFeed.leftSidebarOpen
+  );
+  const isComputerScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const isTabletScreen = useMediaQuery(theme.breakpoints.up("sm"));
+  const isPhoneScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const leftSidebar = isComputerScreen || isTabletScreen || leftSidebarOpen;
 
   return (
     <>
@@ -135,12 +151,20 @@ function PostPage() {
         <div>
           <Header />
           <div style={{ display: "flex" }}>
-            <Sidebar />
+            {leftSidebar && <Sidebar />}
 
             <Box
-              width="30vw"
+              width={
+                isComputerScreen
+                  ? "30vw"
+                  : isTabletScreen
+                  ? "65vw"
+                  : isPhoneScreen
+                  ? "80vw"
+                  : 0
+              }
               height="auto"
-              margin="0 150px"
+              margin={isComputerScreen ? "0 150px" : "0 20px"}
               padding="12px 16px 0px 10px"
               boxShadow="2"
               sx={{
@@ -155,7 +179,15 @@ function PostPage() {
                   marginBottom: "10px",
                 }}
               >
-                <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
+                {eachPostDetail.nameInfo.profilePhoto.length === 0 ? (
+                  <FaceIcon fontSize="large" sx={{ mr: "10px" }} />
+                ) : (
+                  <img
+                    style={{ marginRight: "5px" }}
+                    src={eachPostDetail.nameInfo.profilePhoto}
+                    width="40px"
+                  />
+                )}
                 <Box mt="5px">
                   <Typography
                     fontWeight="fontWeightBold"
@@ -267,10 +299,25 @@ function PostPage() {
                       return (
                         <Box key={index}>
                           <Box display="flex">
-                            <FaceIcon
-                              fontSize="large"
-                              sx={{ mr: "10px", mt: "10px" }}
-                            />
+                            {eachComment.userId === user?._id &&
+                              (!user?.profilePhoto ? (
+                                <FaceIcon
+                                  fontSize="large"
+                                  sx={{ mr: "10px", mt: "10px" }}
+                                />
+                              ) : (
+                                <img
+                                  style={{
+                                    marginTop: "10px",
+                                    marginRight: "10px",
+                                  }}
+                                  src={user.profilePhoto}
+                                  width="32"
+                                  height="32"
+                                  alt="User Profile"
+                                />
+                              ))}
+
                             <Box
                               display="flex"
                               flexDirection="column"
@@ -326,11 +373,17 @@ function PostPage() {
                       component="form"
                       onSubmit={handleSubmit}
                     >
-                      <FaceIcon sx={{ fontSize: "40px" }} />
+                      {myInfo[0].profilePhoto.length === 0 ? (
+                        <FaceIcon sx={{ fontSize: "40px" }} />
+                      ) : (
+                        <img
+                          style={{ marginRight: "5px" }}
+                          src={myInfo[0].profilePhoto}
+                          width="40px"
+                        />
+                      )}
                       <TextField
                         name="content"
-                        value={comment}
-                        onChange={(e) => dispatch(setComment(e.target.value))}
                         multiline
                         variant="standard"
                         InputProps={{
@@ -345,7 +398,7 @@ function PostPage() {
                           padding: "5px 0px 0px 10px",
                           height: "80%",
                         }}
-                        placeholder={`Answer as, name?`}
+                        placeholder={`Answer as, ${myInfo[0].firstName}?`}
                       />
                       <IconButton type="submit">
                         <SendIcon
