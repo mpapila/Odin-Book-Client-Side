@@ -1,13 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-} from "@mui/material";
-import ContactMailIcon from "@mui/icons-material/Forum";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import BookIcon from "/book.png";
+
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { ErrorDetail, RegisterFormData } from "../type";
@@ -15,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setErrorMessage } from "../redux/UserErrorSlice";
 import { RootState } from "../redux/Store";
 import Loading from "../components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 function Register() {
   const error = useSelector(
@@ -65,7 +58,7 @@ function Register() {
       password: data.get("password") as string,
       dateOfBirth: data.get("dateOfBirth") as string,
     };
-    // console.log("body", body);
+    console.log("body", body);
     mutation.mutate(body);
   };
   return (
@@ -76,6 +69,7 @@ function Register() {
           maxWidth="sm"
           className="full-background"
           sx={{
+            backgroundColor: "#F6F6F6",
             height: "100vh",
             display: "flex",
             flexDirection: "column",
@@ -85,10 +79,13 @@ function Register() {
           }}
         >
           <Box display="flex" flexDirection="row" alignItems="center">
-            <ContactMailIcon
-              color="success"
-              sx={{ width: "60px", height: "60px" }}
-            />
+            <Box
+              component="img"
+              src={BookIcon}
+              alt="Book Icon"
+              width="60px"
+              // height="60px"
+            ></Box>
             <Typography ml={3} fontSize="30px">
               Odin Book
             </Typography>
@@ -96,15 +93,12 @@ function Register() {
           <Box
             sx={{
               marginBottom: 8,
-              marginTop: 8,
+              marginTop: 3,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
@@ -177,14 +171,14 @@ function Register() {
               >
                 Sign Up
               </Button>
-              {/* <Button
-              // component={RouterLink}
-              to="/login"
-              variant="text"
-              sx={{ textDecoration: "underline", textTransform: "none" }}
-            >
-              Already have an account? Sign in
-            </Button> */}
+              <Button
+                component={RouterLink}
+                to="/login"
+                variant="text"
+                sx={{ textDecoration: "underline", textTransform: "none" }}
+              >
+                Already have an account? Sign in
+              </Button>
             </Box>
           </Box>
           <Box
