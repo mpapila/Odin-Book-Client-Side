@@ -13,7 +13,18 @@ const initialState: UsersState = {
   status: "idle",
   myPendingFriendsListforRequesterUsers: [],
   error: null,
+  friendships: [],
 };
+
+export const fetchFriendShips = createAsyncThunk("friendship", async () => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(`${URL}/myPendingFriendsList`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data.allFriendships;
+});
 
 export const fetchUsersInfo = createAsyncThunk("fetchUsersInfo", async () => {
   const token = localStorage.getItem("token");
@@ -97,7 +108,10 @@ const UserSlice = createSlice({
         (state, action) => {
           state.myPendingFriendsListforRequesterUsers = action.payload;
         }
-      );
+      )
+      .addCase(fetchFriendShips.fulfilled, (state, action) => {
+        state.friendships = action.payload;
+      });
   },
 });
 

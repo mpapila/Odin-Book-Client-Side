@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface RegisterFormData {
   firstName: string;
   lastName: string;
@@ -37,6 +39,7 @@ export interface UsersInfo {
   createdAt: string;
   status: string;
   error: null;
+  profilePhoto: string;
 }
 
 export interface IncomingRequests {
@@ -65,8 +68,14 @@ export interface myFriendsState {
   lastName: string;
   username: string;
   dateOfBirth: string;
+  profilePhoto: string;
 }
-
+interface Friend {
+  requesterId: string;
+  receiverId: string;
+  status: string;
+  createdAt: string;
+}
 export interface UsersState {
   allUsers: UsersInfo[];
   myFriendsList: myFriendsState[];
@@ -75,21 +84,26 @@ export interface UsersState {
   myPendingFriendsListforRequesterUsers: myPendingFriendsListforRequesterUsersState[];
   status: string;
   error: null;
+  friendships: Friend[];
 }
 
 export interface friendPostsType {
   _id: string;
+  userId?: string;
   content: string;
   likes: string[];
   comments: string[];
   firstName: string;
   lastName: string;
   createdAt: string;
+  profilePhoto: string;
 }
 
 export interface PostFeedState {
   setCreatePost: boolean;
+  rightSidebarOpen: boolean;
   friendPosts: friendPostsType[];
+  leftSidebarOpen: boolean;
 }
 
 export interface PostReactionState {
@@ -103,7 +117,11 @@ export interface PostReactionData {
 }
 
 export interface NotificationState {
-  setNotificationRead: boolean;
+  setNotificationRead: boolean | null;
+  allNotifications: {
+    birthdaysToday: Birthdaystoday[];
+    notifications: Notification[];
+  };
 }
 export interface UserErrorState {
   setErrorMessage?: string | null;
@@ -121,6 +139,7 @@ export interface NameInfo {
   dateOfBirth: string;
   createdAt: string;
   updatedAt: string;
+  profilePhoto: string;
   __v: number;
 }
 export interface Post {
@@ -128,7 +147,7 @@ export interface Post {
   userId: string;
   content: string;
   likes: string[];
-  comments: Comment;
+  comments: Comment[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -139,18 +158,65 @@ export interface EachPostDetail {
 }
 
 export interface Comment {
-  map(
-    arg0: (
-      eachComment: Comment,
-      index: import("react").Key | null | undefined
-    ) => import("react/jsx-runtime").JSX.Element
-  ): import("react").ReactNode;
   userId: string;
   content: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface NewCommentBody {
   content: string;
   postId: string;
+}
+
+export interface Notification {
+  createdAt: string;
+  message: string;
+  type: string;
+  userId: string;
+  _id: string;
+  postId?: string;
+}
+
+export interface Birthdaystoday {
+  dateOfBirth: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface AllNotifications {
+  birthdaysToday: Birthdaystoday[];
+  notifications: Notification[];
+}
+
+export interface ProfileInformation {
+  createdAt: string;
+  dateOfBirth: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  profilePhoto: string;
+}
+export interface UserProfilePost {
+  content: string;
+  userId: string;
+}
+export interface UserProfileOne {
+  userProfileById: ProfileInformation;
+  userPostById: friendPostsType[];
+}
+
+export interface UserProfile {
+  // userProfileById: ProfileInformation;
+  // userPostById: string;
+  userProfile: UserProfileOne;
+  posts: friendPostsType[];
+  profileInformation: ProfileInformation;
+  editProfileButton: boolean;
+  myName: string;
+  loading: boolean;
+  error: string | null;
+  success: string | null;
+
+  // openPhotoModal: boolean;
 }
