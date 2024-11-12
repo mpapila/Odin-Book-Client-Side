@@ -1,4 +1,11 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFriendsPosts, setCreatePost } from "../redux/PostFeedSlice";
 import CloseIcon from "@mui/icons-material/Close";
@@ -10,6 +17,7 @@ import { AppDispatch, RootState } from "../redux/Store";
 import { fetchUsersInfo } from "../redux/UserSlice";
 
 function CreatePost() {
+  const theme = useTheme();
   const allUsers = useSelector((state: RootState) => state.UserInfo.allUsers);
   console.log("allUsers", allUsers);
   const myUserId = localStorage.getItem("myUserId");
@@ -32,6 +40,8 @@ function CreatePost() {
       dispatch(fetchFriendsPosts());
     },
   });
+  const isPhoneScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -60,7 +70,7 @@ function CreatePost() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "500px",
+          width: !isPhoneScreen ? "500px" : "350px",
           minHeight: "350px",
           borderRadius: 1,
           boxShadow: 24,
@@ -155,8 +165,11 @@ function CreatePost() {
                   />
                   <Button
                     type="submit"
-                    sx={{ marginTop: "auto" }}
-                    fullWidth
+                    sx={{
+                      marginTop: "auto",
+                      width: !isPhoneScreen ? "100%" : "65%",
+                    }}
+                    // fullWidth
                     variant="contained"
                   >
                     Post
