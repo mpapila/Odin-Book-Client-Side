@@ -82,7 +82,7 @@ function Login() {
   return (
     <>
       {mutation.isPending && <Loading />}
-
+      {!isServerOkay && <Loading />}
       <>
         <Container
           maxWidth="sm"
