@@ -98,6 +98,7 @@ export interface friendPostsType {
 }
 
 export interface PostFeedState {
+  isServerOkay: boolean;
   setCreatePost: boolean;
   rightSidebarOpen: boolean;
   friendPosts: friendPostsType[];

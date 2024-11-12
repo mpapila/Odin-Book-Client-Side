@@ -7,6 +7,7 @@ const initialState: PostFeedState = {
   friendPosts: [],
   rightSidebarOpen: false,
   leftSidebarOpen: false,
+  isServerOkay: false,
 };
 
 export const fetchFriendsPosts = createAsyncThunk(
@@ -23,6 +24,13 @@ export const fetchFriendsPosts = createAsyncThunk(
     return response.data.friendsPostswithInfo;
   }
 );
+
+export const healthCheck = createAsyncThunk("healthCheck", async () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const URL = `${apiUrl}`;
+  const response = await axios.get(`${URL}/health-check`);
+  return response.data;
+});
 
 const PostFeedSlice = createSlice({
   name: "postfeed",
@@ -41,7 +49,10 @@ const PostFeedSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchFriendsPosts.fulfilled, (state, action) => {
       state.friendPosts = action.payload;
-    });
+    }),
+      builder.addCase(healthCheck.fulfilled, (state, action) => {
+        state.isServerOkay = action.payload;
+      });
   },
 });
 

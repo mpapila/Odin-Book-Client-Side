@@ -3,23 +3,29 @@ import BookIcon from "/book.png";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/Store";
-import React from "react";
+import { AppDispatch, RootState } from "../redux/Store";
+import React, { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { ErrorDetail, LoginFormData } from "../type";
 import { setErrorMessage } from "../redux/UserErrorSlice";
 import Loading from "../components/LoadingSpinner";
+import { healthCheck } from "../redux/PostFeedSlice";
 
 function Login() {
   const apiUrl = import.meta.env.VITE_API_URL;
   const URL = `${apiUrl}/login`;
   const demoToken = import.meta.env.VITE_DEMO_TOKEN;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const error = useSelector(
     (state: RootState) => state.UserError.setErrorMessage
   );
+  const isServerOkay = useSelector(
+    (state: RootState) => state.PostFeed.isServerOkay
+  );
+
+  console.log("isserverokay", isServerOkay);
 
   const mutation = useMutation({
     mutationFn: async (body: LoginFormData) => {
@@ -69,9 +75,14 @@ function Login() {
     navigate("/");
   };
 
+  useEffect(() => {
+    dispatch(healthCheck());
+  }, []);
+
   return (
     <>
       {mutation.isPending && <Loading />}
+
       <>
         <Container
           maxWidth="sm"
