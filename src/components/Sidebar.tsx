@@ -17,7 +17,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchAllNotifications } from "../redux/NotificationSlice";
 import { fetchUsersInfo, mergedIncomingRequests } from "../redux/UserSlice";
-import { setLeftSidebarOpen } from "../redux/PostFeedSlice";
+import { healthCheck, setLeftSidebarOpen } from "../redux/PostFeedSlice";
+import Loading from "./LoadingSpinner";
 
 function Sidebar() {
   const theme = useTheme();
@@ -36,6 +37,10 @@ function Sidebar() {
   const allUsersInfo = useSelector(
     (state: RootState) => state.UserInfo.allUsers
   );
+  const isServerOkay = useSelector(
+    (state: RootState) => state.PostFeed.isServerOkay
+  );
+  console.log("isserverokay", isServerOkay);
 
   const navigate = useNavigate();
 
@@ -43,6 +48,7 @@ function Sidebar() {
     dispatch(mergedIncomingRequests());
     dispatch(fetchAllNotifications());
     dispatch(fetchUsersInfo());
+    dispatch(healthCheck());
 
     if (!token) {
       navigate("/login");
@@ -64,6 +70,7 @@ function Sidebar() {
             minHeight: "80vh",
           }}
         >
+          {!isServerOkay && <Loading />}
           {allUsersInfo.map((user) => (
             <Box key={user._id}>
               {user._id === myUserId ? (
