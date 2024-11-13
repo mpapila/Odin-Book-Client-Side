@@ -1,7 +1,7 @@
 # Odin Book Web App (Frontend)
 
 ## Live Site
-[https://messaging-app-client-side.onrender.com/](https://odin-book-client-side.netlify.app/)
+[https://odin-book-client-side.netlify.app](https://odin-book-client-side.netlify.app/)
 
 ## Server Repository
 
