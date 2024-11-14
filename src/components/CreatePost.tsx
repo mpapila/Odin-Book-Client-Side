@@ -148,6 +148,7 @@ function CreatePost() {
                   <TextField
                     name="content"
                     multiline
+                    autoFocus
                     variant="standard"
                     InputProps={{
                       disableUnderline: true,

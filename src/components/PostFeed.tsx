@@ -341,16 +341,19 @@ function PostFeed() {
             // display={isComputerScreen ? "block" : "none"}
             display="flex"
             // overflow="scroll"
-            // sx={{
-            //   maxWidth: "25vw",
-            //   scrollbarWidth: "none",
-            //   "&::-webkit-scrollbar": {
-            //     display: "none",
-            //   },
-            //   "&-ms-overflow-style:": {
-            //     display: "none",
-            //   },
-            // }}
+            sx={{
+              overflowY: "scroll",
+              minWidth: "20vw",
+              width: "70%",
+              height: "80vh",
+              scrollbarWidth: "none",
+              // "&::-webkit-scrollbar": {
+              //   display: "none",
+              // },
+              // "&-ms-overflow-style:": {
+              //   display: "none",
+              // },
+            }}
           >
             <Box>
               <Typography pr={15} color="#939090" fontWeight={700}>
