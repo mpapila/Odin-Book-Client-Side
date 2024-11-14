@@ -1,50 +1,37 @@
-# React + TypeScript + Vite
+# Odin Book Web App (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Live Site
+[https://odin-book-client-side.netlify.app](https://odin-book-client-side.netlify.app/)
 
-Currently, two official plugins are available:
+## Server Repository
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[Odin-Book-Server-Side](https://github.com/mpapila/Odin-Book-Server-Side)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **User Authentication**: Secure login and token-based authentication.
+- **Friend Requests**: Users can send, receive, and respond to friend requests, enabling the expansion of their social network.
+- **Post Creation and Viewing**: Users can create posts, view posts by friends, and access individual post details.
+- **Comments and Reactions**: Users can comment on posts and manage interactions.
+- **Sidebar Controls**: Manage sidebar states for streamlined navigation.
 
-- Configure the top-level `parserOptions` property like this:
+## Technologies Used
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- **React** with **TypeScript** for robust and type-safe code
+- **Redux Toolkit** for state management
+- **React-Query** for efficient server data fetching and caching
+- **Axios** for API requests
+- **Vite** for project setup and build
+- **Material-UI (MUI)** for component styling and theming
+- **dotenv** for environment variable management
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Key Components
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **PostFeed**: Displays a feed of posts from friends.
+- **PostDetail**: Shows detailed view and comments for a selected post.
+- **Sidebar**: Manages the navigation and sidebar state.
+- **Profile**: Displays user profile information, including posts, and personal details. Users can edit their profile and view other users' profiles.
+
+
+

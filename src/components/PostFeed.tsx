@@ -115,6 +115,7 @@ function PostFeed() {
         <Box
           overflow="scroll"
           height="85vh"
+          pr={!isPhoneScreen ? 10 : 5}
           display="flex"
           flexDirection="column"
           sx={{
@@ -338,8 +339,18 @@ function PostFeed() {
         {isComputerScreen && (
           <Box
             // display={isComputerScreen ? "block" : "none"}
-            display="block"
-            sx={{ maxWidth: "25vw" }}
+            display="flex"
+            // overflow="scroll"
+            // sx={{
+            //   maxWidth: "25vw",
+            //   scrollbarWidth: "none",
+            //   "&::-webkit-scrollbar": {
+            //     display: "none",
+            //   },
+            //   "&-ms-overflow-style:": {
+            //     display: "none",
+            //   },
+            // }}
           >
             <Box>
               <Typography pr={15} color="#939090" fontWeight={700}>
