@@ -62,7 +62,7 @@ function PostPage() {
       });
     },
     onSuccess: (response) => {
-      console.log("Data fetched successfully:", response.data);
+      // console.log("Data fetched successfully:", response.data);
       const data: PostReactionData = response.data;
       setIsLiked(data.alreadyLiked ?? false);
       setLikesCount(data.postLikeCount ?? 0);

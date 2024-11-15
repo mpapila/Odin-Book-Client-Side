@@ -47,8 +47,8 @@ function Notification() {
     (state: RootState) => state.Notification.allNotifications
   );
 
-  console.log("birthday today", allNotifications.birthdaysToday);
-  console.log("allNotifications", allNotifications);
+  // console.log("birthday today", allNotifications.birthdaysToday);
+  // console.log("allNotifications", allNotifications);
   const mergedIncomingRequestsList = useSelector(
     (state: RootState) => state.UserInfo.mergedIncomingRequestsList
   );

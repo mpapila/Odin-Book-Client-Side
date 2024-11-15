@@ -107,8 +107,6 @@ function PostFeed() {
       <Box
         p="20px"
         display={containerDisplay}
-        // display="block"
-        // width="70vw"
         width={isPhoneScreen ? "100vw" : "70vw"}
         justifyContent="space-around"
       >
@@ -119,7 +117,6 @@ function PostFeed() {
           display="flex"
           flexDirection="column"
           sx={{
-            // maxWidth: "40vw",
             scrollbarWidth: "none",
             "&::-webkit-scrollbar": {
               display: "none",
@@ -166,7 +163,6 @@ function PostFeed() {
                 }}
                 sx={{
                   margin: "5px 5px 5px 0px",
-                  // width: "30vw",
                   width: !isComputerScreen ? "100vw" : "30vw",
                   backgroundColor: "white",
                   borderRadius: "10px",
@@ -201,11 +197,7 @@ function PostFeed() {
               overflowY: "auto",
             }}
           >
-            <Box
-              // display={isComputerScreen ? "block" : "none"}
-              display="block"
-              sx={{ maxWidth: "100vw" }}
-            >
+            <Box display="block" sx={{ maxWidth: "100vw" }}>
               <Box>
                 <Typography pr={15} color="#939090" fontWeight={700}>
                   Birthdays
@@ -338,21 +330,13 @@ function PostFeed() {
 
         {isComputerScreen && (
           <Box
-            // display={isComputerScreen ? "block" : "none"}
             display="flex"
-            // overflow="scroll"
             sx={{
               overflowY: "scroll",
               minWidth: "20vw",
               width: "70%",
               height: "80vh",
               scrollbarWidth: "none",
-              // "&::-webkit-scrollbar": {
-              //   display: "none",
-              // },
-              // "&-ms-overflow-style:": {
-              //   display: "none",
-              // },
             }}
           >
             <Box>

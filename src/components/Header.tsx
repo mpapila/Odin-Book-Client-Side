@@ -36,7 +36,7 @@ function Header() {
   const leftSidebarOpen = useSelector(
     (state: RootState) => state.PostFeed.leftSidebarOpen
   );
-  console.log("leftSidebarOpen", leftSidebarOpen);
+  // console.log("leftSidebarOpen", leftSidebarOpen);
   const openSidebarButton = () => {
     dispatch(setRightSideBarOpen(!rightSidebarOpen));
     if (leftSidebarOpen) {
@@ -51,7 +51,7 @@ function Header() {
   };
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
-  console.log("inputvalue", inputValue);
+  // console.log("inputvalue", inputValue);
   const allUsers = useSelector((state: RootState) => state.UserInfo.allUsers);
   const users = allUsers.map((user) => {
     return { name: `${user.firstName} ${user.lastName}`, id: user._id };

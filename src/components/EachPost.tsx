@@ -17,7 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/Store";
 
 export const EachPost = ({ post }: EachPostProps) => {
-  console.log("post", post);
+  // console.log("post", post);
   const navigate = useNavigate();
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes.length);
@@ -28,8 +28,8 @@ export const EachPost = ({ post }: EachPostProps) => {
   const token = localStorage.getItem("token");
   const lastComment: Comment = post.comments[post.comments.length - 1];
 
-  console.log("lastcomment", lastComment);
-  console.log("post.comments", post.comments);
+  // console.log("lastcomment", lastComment);
+  // console.log("post.comments", post.comments);
 
   const mutationLikeGet = useMutation<PostReactionState, unknown, string>({
     mutationFn: async (postId) => {
@@ -42,7 +42,7 @@ export const EachPost = ({ post }: EachPostProps) => {
       });
     },
     onSuccess: (response) => {
-      console.log("Data fetched successfully:", response.data);
+      // console.log("Data fetched successfully:", response.data);
       const data: PostReactionData = response.data;
       setIsLiked(data.alreadyLiked ?? false);
       setLikesCount(data.postLikeCount ?? 0);
